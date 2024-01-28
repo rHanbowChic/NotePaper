@@ -63,6 +63,7 @@ def page_get(page):
             text = text[0][0]
         # 过滤可能的XSS
         text = sanitize_html(text)
+
         if (request.headers.get("User-Agent") is not None and (
             "curl/" in request.headers.get("User-Agent")
             or "Wget/" in request.headers.get("User-Agent")
@@ -76,10 +77,13 @@ def page_get(page):
             text = ""
         else:
             text = text[0][0]
+
+        is_text_request = request.args.get('request_text') is not None
         if (request.headers.get("User-Agent") is not None and (
-                "curl/" in request.headers.get("User-Agent")
-                or "Wget/" in request.headers.get("User-Agent")
-        )):
+            "curl/" in request.headers.get("User-Agent")
+            or "Wget/" in request.headers.get("User-Agent")
+            or is_text_request
+        )):  # 给带有request_text参数的请求始终直接显示内容，用于Ajax实时更新
             return text
         else:
             return render_template('note.html', page=page, text=text)
