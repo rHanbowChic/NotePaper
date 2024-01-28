@@ -13,3 +13,5 @@ py app.py
 这是一个Flask应用，你可以使用部署任何Flask应用的方式部署它。
 
 例如使用Gunicorn与Nginx。
+
+<sup><sub>~~我想我和纸干上了~~</sub></sup>
