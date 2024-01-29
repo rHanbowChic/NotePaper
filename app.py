@@ -6,6 +6,7 @@ from flask import redirect
 from flask import Response
 from flaskext.markdown import Markdown
 from bs4 import BeautifulSoup
+from zlib import crc32
 import sqlite3
 import random#最好的模块
 import string
@@ -73,21 +74,30 @@ def page_get(page):
         else:
             return render_template('note_md.html', page=page, text=text)
     else:
-        text = cur.execute("select text from pages where id = ?", (page,)).fetchall()
-        if len(text) == 0:
-            text = ""
+        is_hash_request = request.args.get('request_hash') is not None
+        if is_hash_request:
+            crc32_hash = cur.execute("SELECT hash FROM pages WHERE id = ?", (page,)).fetchall()
+            if len(crc32_hash) == 0:
+                crc32_hash = ""
+            else:
+                crc32_hash = crc32_hash[0][0]
+            return Response(str(crc32_hash), mimetype='text/plain')
         else:
-            text = text[0][0]
+            text = cur.execute("select text from pages where id = ?", (page,)).fetchall()
+            if len(text) == 0:
+                text = ""
+            else:
+                text = text[0][0]
 
-        is_text_request = request.args.get('request_text') is not None
-        if (request.headers.get("User-Agent") is not None and (
-            "curl/" in request.headers.get("User-Agent")
-            or "Wget/" in request.headers.get("User-Agent")
-            or is_text_request
-        )):  # 给带有request_text参数的请求始终直接显示内容，用于Ajax实时更新
-            return Response(text, mimetype='text/plain')
-        else:
-            return render_template('note.html', page=page, text=text)
+            is_text_request = request.args.get('request_text') is not None
+            if (request.headers.get("User-Agent") is not None and (
+                "curl/" in request.headers.get("User-Agent")
+                or "Wget/" in request.headers.get("User-Agent")
+                or is_text_request
+            )):  # 给带有request_text参数的请求始终直接显示内容，用于Ajax实时更新
+                return Response(text, mimetype='text/plain')
+            else:
+                return render_template('note.html', page=page, text=text)
 
 
 @app.route("/<page>", methods=['POST'])
@@ -97,7 +107,8 @@ def note_post(page):
     if not page.endswith(".md"):
         t = request.form.get("t")
         if t is not None:
-            cur.execute("insert or replace into pages values(?, ?);", (page, t))
+            crc32_hash = crc32(bytes(t, 'utf-8'))
+            cur.execute("insert or replace into pages values(?, ?, ?);", (page, t, crc32_hash))
             get_db().commit()
     return ""
 

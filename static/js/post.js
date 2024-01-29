@@ -11,12 +11,20 @@ setInterval(function() {
     }
     else {
         $.ajax({
-            url: "?request_text",
+            url: "?request_hash",
             type: 'GET',
-            success: function(text) {
-                if ($textarea.val() == content) {
-                    content = text;
-                    $textarea.val(text)
+            success: function(crc32_hash) {
+                if (crc32(Utf8Encode($textarea.val())) != crc32_hash){
+                    $.ajax({
+                        url: "?request_text",
+                        type: "GET",
+                        success: function(text) {
+                            if ($textarea.val() == content) {
+                                $textarea.val(text);
+                                content = text;
+                            }
+                        }
+                    });
                 }
             }
         });
