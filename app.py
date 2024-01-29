@@ -3,6 +3,7 @@ from flask import render_template
 from flask import g
 from flask import request
 from flask import redirect
+from flask import Response
 from flaskext.markdown import Markdown
 from bs4 import BeautifulSoup
 import sqlite3
@@ -68,7 +69,7 @@ def page_get(page):
             "curl/" in request.headers.get("User-Agent")
             or "Wget/" in request.headers.get("User-Agent")
         )):  # 给curl与wget直接显示内容
-            return text
+            return Response(text, mimetype='text/plain')
         else:
             return render_template('note_md.html', page=page, text=text)
     else:
@@ -84,7 +85,7 @@ def page_get(page):
             or "Wget/" in request.headers.get("User-Agent")
             or is_text_request
         )):  # 给带有request_text参数的请求始终直接显示内容，用于Ajax实时更新
-            return text
+            return Response(text, mimetype='text/plain')
         else:
             return render_template('note.html', page=page, text=text)
 
