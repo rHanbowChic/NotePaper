@@ -18,7 +18,8 @@ Markdown(app)
 DATABASE = 'data/note_paper.sqlite'
 
 
-VALID_TAGS = ['strong', 'em', 'p', 'ul', 'li', 'br', 'sub', 'sup', 'ruby', 'rt', 'rp', 'details', 'summary']
+VALID_TAGS = ['strong', 'em', 'p', 'ul', 'ol', 'li', 'b', 'i',
+              'br', 'sub', 'sup', 'ruby', 'rt', 'rp', 'details', 'summary']
 
 
 # 通过去除除VALID_TAGS外所有的标签与VALID_TAGS标签的所有属性来避免XSS攻击。
@@ -78,10 +79,10 @@ def page_get(page):
         if is_hash_request:
             crc32_hash = cur.execute("SELECT hash FROM pages WHERE id = ?", (page,)).fetchall()
             if len(crc32_hash) == 0:
-                crc32_hash = ""
+                crc32_hash = "0"
             else:
-                crc32_hash = crc32_hash[0][0]
-            return Response(str(crc32_hash), mimetype='text/plain')
+                crc32_hash = str(crc32_hash[0][0])
+            return Response(crc32_hash, mimetype='text/plain')
         else:
             text = cur.execute("select text from pages where id = ?", (page,)).fetchall()
             if len(text) == 0:
