@@ -26,6 +26,9 @@
     <meta property="og:site_name" content="Note.ms">
     <meta property="og:description" content="Take notes with simplicity">
     <meta property="og:image" content="static/img/app.png">
+    <script>
+        const page = "{{ page }}";
+    </script>
 </head>
 
 <body>
@@ -43,8 +46,8 @@
     </div>
     <pre class="print"></pre>
     <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.2.4.min.js"></script>
-    <script src="./static/js/crc32.js"></script>
-    <script src="./static/js/post.js"></script>
+    <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
+    <script src="./static/js/note-socket.js"></script>
 
 
 </body>
