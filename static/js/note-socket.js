@@ -1,6 +1,7 @@
 var $textarea = $(".content");
 var content = $textarea.val();
 $(".print").text(content);
+const page = decodeURIComponent(window.location.pathname.substring(1));
 
 var socket;
 $(document).ready(function(){
@@ -14,7 +15,7 @@ $(document).ready(function(){
         $textarea.val(data.text);
     });
 
-    area = document.querySelector('textarea')
+    area = document.querySelector('textarea');
     area.addEventListener('input', () => {
         socket.emit('text_post', {'page':page, 'text':$textarea.val()});
         $(".print").text(content);
