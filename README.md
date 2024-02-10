@@ -14,8 +14,8 @@ py app.py
 
 例如使用Gunicorn与Nginx。
 
-<sup><sub>~~我想我和纸干上了~~</sub></sup>
+------
 
-## 目前的任务
-* 使用 WebSocket 重写
-  * 考虑到加入实时更新后，这里已经不再是 Ajax 的长处。一秒发送一次请求使服务器日志成为动辄几十MB的怪兽级别
+NotePaper使用WebSocket更新笔记内容，但接受带有t参数的HTTP POST。
+
+<sup><sub>~~我想我和纸干上了~~</sub></sup>
