@@ -9,7 +9,7 @@ py app.py
 ```
 在浏览器访问`127.0.0.1:5000`。Enjoy！
 
-## 我想放到服务器上，像[knockoff](https://knockoff.ect.fyi/)
+## 我想放到服务器上，像[note.ect.fyi](https://note.ect.fyi/)
 这是一个Flask应用，你可以使用部署任何Flask应用的方式部署它。
 
 例如使用Gunicorn与Nginx。
