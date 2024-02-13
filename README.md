@@ -14,6 +14,9 @@ py app.py
 
 例如使用Gunicorn与Nginx。
 
+## 目前的任务
+* 每次文本更新后，光标都会移到最后。
+  * 更新后，光标应该插入到对用户最友好的位置。
 ------
 
 NotePaper使用WebSocket更新笔记内容，但接受带有t参数的HTTP POST。
