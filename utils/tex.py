@@ -2,7 +2,7 @@ import base64
 import matplotlib.pyplot as plt
 import io
 
-MAX_RENDERING_AMOUNT = 5  # 每个页面中最大可渲染的TeX数量
+MAX_RENDERING_AMOUNT = 30  # 每个页面中最大可渲染的TeX数量
 MAX_TEX_LENGTH = 100  # 每个TeX的最大允许长度（超出则不会渲染）
 
 
@@ -23,12 +23,12 @@ def latex_to_data_url(tex):
         bbox = fig.texts[0].get_window_extent()
     except ValueError:
         return "data:image/svg+xml;base64,"
-    img_size = (bbox.width / 100 + 0.1, bbox.height / 100 + 0.1)
+    img_size = (bbox.width / 100, bbox.height / 100 + 0.1)
     fig.set_size_inches(img_size)
 
-    plt.savefig(buf, format="svg")
+    plt.savefig(buf, format="png")
 
-    return "data:image/svg+xml;base64," + base64.b64encode(buf.getvalue()).decode("utf-8")
+    return "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode("utf-8")
 
 
 def tex_to_markdown(passage: str):
