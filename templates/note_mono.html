@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#ebeef2">
+    <title>{{ page }} - NotePaper</title>
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui, viewport-fit=cover">
+    <meta name="format-detection" content="telephone=no">
+    <link href="./static/css/abc.css" rel="stylesheet">
+    <link rel="shortcut icon" href="./static/img/favicon.png" type="image/png">
+    <link rel="icon" href="./static/img/favicon.png" type="image/png">
+    <link rel="apple-touch-icon" href="./static/img/app.png">
+    <link rel="apple-touch-icon-precomposed" href="./static/img/app.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="msapplication-TileColor" content="ebeef2">
+    <meta name="msapplication-TileImage" content="static/img/app.png">
+    <meta name="theme-color" content="#ebeef2">
+    <meta property="og:title" content="Note.ms">
+    <meta property="og:site_name" content="Note.ms">
+    <meta property="og:description" content="Take notes with simplicity">
+    <meta property="og:image" content="static/img/app.png">
+    <style>
+        @font-face {
+            font-family: 'JetBrains Mono';
+            src:  url('/static/fonts/JetBrainsMono-Light.woff2') format('woff2');
+        }
+        textarea {
+            font-family: 'JetBrains Mono', 'Courier New', Courier, monospace;
+            line-height: 1.5;
+        }
+        .content {
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="stack">
+        <div class="layer">
+            <div class="layer">
+                <div class="layer">
+                    <textarea class="content" spellcheck="false">{{ text }}</textarea>
+                </div>
+            </div>
+        </div>
+        <div class="flag">
+            <a href="https://github.com/rHanbowChic/NotePaper">NotePaper</a>/{{ page }}
+        </div>
+    </div>
+    <pre class="print"></pre>
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.2.4.min.js"></script>
+    <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
+    <script src="./static/js/note-socket.js"></script>
+
+
+</body>
+
+</html>
