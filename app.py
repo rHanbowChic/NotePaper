@@ -1,3 +1,4 @@
+
 from flask import Flask
 from flask import render_template
 from flask import g
@@ -7,6 +8,7 @@ from flask import Response
 from flaskext.markdown import Markdown
 from flask_socketio import SocketIO, join_room, emit, leave_room
 from bs4 import BeautifulSoup
+import utils.tex
 import sqlite3
 import random  # 最好的模块
 import string
@@ -71,6 +73,8 @@ def page_get(page):
             text = ""
         else:
             text = text[0][0]
+        # 将TeX公式转换为Markdown图片
+        text = utils.tex.tex_to_markdown(text)
         # 过滤可能的XSS
         text = sanitize_html(text)
 
@@ -89,12 +93,15 @@ def page_get(page):
             text = text[0][0]
 
         is_text_request = request.args.get('text') is not None
+        is_mono_request = request.args.get('m') is not None or request.args.get('mono') is not None
         if (request.headers.get("User-Agent") is not None and (
-            "curl/" in request.headers.get("User-Agent")
-            or "Wget/" in request.headers.get("User-Agent")
-            or is_text_request
-        )):  # 给curl,Wget或带有text参数(?text)的请求直接显示内容
+                "curl" in request.headers.get("User-Agent")
+                or "Wget" in request.headers.get("User-Agent")
+                or is_text_request
+        )):  # 给带有text参数的请求始终直接显示内容
             return Response(text, mimetype='text/plain')
+        elif is_mono_request:
+            return render_template('note_mono.html', page=page, text=text)
         else:
             return render_template('note.html', page=page, text=text)
 
