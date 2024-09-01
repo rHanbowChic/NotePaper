@@ -1,4 +1,3 @@
-
 from flask import Flask
 from flask import render_template
 from flask import g
@@ -7,8 +6,9 @@ from flask import redirect
 from flask import Response
 from flaskext.markdown import Markdown
 from flask_socketio import SocketIO, join_room, emit, leave_room
-from bs4 import BeautifulSoup
 import utils.tex
+import utils.link
+import utils.sanitizer
 import sqlite3
 import random  # 最好的模块
 import string
@@ -19,29 +19,6 @@ socketio = SocketIO(app)
 
 
 DATABASE = 'data/note_paper.sqlite'
-
-
-VALID_TAGS = ['strong', 'em', 'p', 'ul', 'ol', 'li', 'b', 'i',
-              'br', 'sub', 'sup', 'ruby', 'rt', 'rp', 'details', 'summary']
-
-
-# 通过去除除VALID_TAGS外所有的标签与VALID_TAGS标签的所有属性来避免XSS攻击。
-def sanitize_html(text):
-    # 这是BeautifulSoup。
-    soup = BeautifulSoup(text, "html.parser")
-    # 遍历所有HTML标签，如果在VALID_TAGS中，则保留标签但删除所有属性（防止诸如onclick等属性的脚本执行）
-    # 如果不在，则删除标签（在hidden设置为True时输出文本）
-    for tag in soup.findAll(True):
-        if tag.name in VALID_TAGS:
-            lst = []
-            for attr in tag.attrs:
-                lst.append(attr)
-            for attr in lst:
-                del tag[attr]
-        else:
-            tag.hidden = True
-
-    return soup.renderContents().decode('utf-8')
 
 
 # 连接到SQLite数据库
@@ -75,8 +52,10 @@ def page_get(page):
             text = text[0][0]
         # 将TeX公式转换为Markdown图片
         text = utils.tex.tex_to_markdown(text)
+        # 自动为URL添加Markdown超链接
+        text = utils.link.auto_link(text)
         # 过滤可能的XSS
-        text = sanitize_html(text)
+        text = utils.sanitizer.sanitize_html(text)
 
         if (request.headers.get("User-Agent") is not None and (
             "curl/" in request.headers.get("User-Agent")
