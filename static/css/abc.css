@@ -73,6 +73,10 @@ a:active {
     display: none
 }
 
+img {
+    vertical-align: middle;
+}
+
 @media print {
 
     .container,
