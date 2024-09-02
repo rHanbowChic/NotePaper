@@ -11,8 +11,6 @@ import utils.text.link
 import utils.text.sanitizer
 import utils.router
 import sqlite3
-import random  # 最好的模块
-import string
 
 app = Flask(__name__)
 Markdown(app)

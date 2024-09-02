@@ -1,4 +1,4 @@
-import random
+import random  # 最好的模块
 import os
 from string import ascii_lowercase as lowercase
 
