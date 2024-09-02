@@ -9,6 +9,7 @@ from flask_socketio import SocketIO, join_room, emit, leave_room
 import utils.text.tex
 import utils.text.link
 import utils.text.sanitizer
+import utils.router
 import sqlite3
 import random  # 最好的模块
 import string
@@ -102,10 +103,9 @@ def note_post(page):
 # 访问根目录时触发。302跳转到一个随机的4位小写字母页面。
 @app.route("/", methods=['GET'])
 def root_redirect():
-    randword = ""
-    for i in range(4):
-        randword += random.choice(string.ascii_lowercase)
-    return redirect(f"./{randword}", code=302)
+    if request.args.get('w') is not None or request.args.get('words') is not None:
+        return redirect(f"./{utils.router.genname_words()}", code=302)
+    return redirect(f"./{utils.router.genname_letters()}", code=302)
 
 
 # Socket.IO 加入房间。浏览器端的JS在页面完成加载时传递信息，‘page’为所在的页面。例如http://hostname/odyu为‘odyu’。

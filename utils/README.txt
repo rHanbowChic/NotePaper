@@ -1,0 +1,1 @@
+common-words-982.txt - 一份单词列表，包含 https://github.com/powerlanguage/word-lists/blob/master/1000-most-common-words.txt 中去除 https://www.cs.cmu.edu/~biglou/resources/bad-words.txt 的部分。
