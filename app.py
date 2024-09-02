@@ -71,7 +71,7 @@ def page_get(page):
         else:
             text = text[0][0]
 
-        is_text_request = request.args.get('text') is not None
+        is_text_request = request.args.get('text') is not None or request.args.get('t') is not None
         is_mono_request = request.args.get('m') is not None or request.args.get('mono') is not None
         if (request.headers.get("User-Agent") is not None and (
                 "curl" in request.headers.get("User-Agent")
