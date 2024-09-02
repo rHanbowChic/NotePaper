@@ -6,9 +6,9 @@ from flask import redirect
 from flask import Response
 from flaskext.markdown import Markdown
 from flask_socketio import SocketIO, join_room, emit, leave_room
-import utils.tex
-import utils.link
-import utils.sanitizer
+import utils.text.tex
+import utils.text.link
+import utils.text.sanitizer
 import sqlite3
 import random  # 最好的模块
 import string
@@ -51,11 +51,11 @@ def page_get(page):
         else:
             text = text[0][0]
         # 将TeX公式转换为Markdown图片
-        text = utils.tex.tex_to_markdown(text)
+        text = utils.text.tex.tex_to_markdown(text)
         # 自动为URL添加Markdown超链接
-        text = utils.link.auto_link(text)
+        text = utils.text.link.auto_link(text)
         # 过滤可能的XSS
-        text = utils.sanitizer.sanitize_html(text)
+        text = utils.text.sanitizer.sanitize_html(text)
 
         if (request.headers.get("User-Agent") is not None and (
             "curl/" in request.headers.get("User-Agent")
