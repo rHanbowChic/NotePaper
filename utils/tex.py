@@ -17,7 +17,7 @@ def latex_to_data_url(tex):
         s=f"{tex}",
         horizontalalignment="center",
         verticalalignment="center",
-        fontsize=16,
+        fontsize=13,
     )
     try:  # 我不知道类似于\some\unwanted\stuff\here\\\\aaa?:"{{:的东西为什么会在这一步出现ValueError，但它确实如此
         bbox = fig.texts[0].get_window_extent()
@@ -43,5 +43,5 @@ def tex_to_markdown(passage: str):
 
 
 if __name__ == "__main__":  # 测试测试
-    print(latex_to_data_url(r"$\frac{-e^{i\pi}}{2^n}$"))
+    print(latex_to_data_url(r"$123$"))
 
