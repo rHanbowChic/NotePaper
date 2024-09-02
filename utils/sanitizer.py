@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 
 
 VALID_TAGS = ['strong', 'em', 'p', 'ul', 'ol', 'li', 'b', 'i',
-              'br', 'sub', 'sup', 'ruby', 'rt', 'rp', 'details', 'summary']
+              'br', 'sub', 'sup', 'ruby', 'rt', 'rp', 'details', 'summary', 's']
 
 
 def sanitize_html(text):
