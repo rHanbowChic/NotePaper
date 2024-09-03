@@ -69,7 +69,6 @@ def page_get(page):
             text = ""
         else:
             text = text[0][0]
-
         is_text_request = request.args.get('text') is not None or request.args.get('t') is not None
         is_mono_request = request.args.get('m') is not None or request.args.get('mono') is not None
         if (request.headers.get("User-Agent") is not None and (
@@ -78,6 +77,9 @@ def page_get(page):
                 or is_text_request
         )):  # 给带有text参数的请求始终直接显示内容
             return Response(text, mimetype='text/plain')
+        elif request.args.get('save') is not None:
+            return Response(text, mimetype='text/plain',
+                            headers={"Content-disposition": f"attachment; filename=\"{page}.txt\""})
         elif is_mono_request:
             return render_template('note_mono.html', page=page, text=text)
         else:
