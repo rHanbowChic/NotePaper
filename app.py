@@ -6,6 +6,7 @@ from flask import redirect
 from flask import Response
 from flaskext.markdown import Markdown
 from flask_socketio import SocketIO, join_room, emit, leave_room
+from urllib.parse import quote_plus
 import utils.text.tex
 import utils.text.link
 import utils.text.sanitizer
@@ -79,7 +80,7 @@ def page_get(page):
             return Response(text, mimetype='text/plain')
         elif request.args.get('save') is not None:
             return Response(text, mimetype='text/plain',
-                            headers={"Content-disposition": f"attachment; filename=\"{page}.txt\""})
+                            headers={"Content-disposition": f"attachment; filename*=UTF-8''{quote_plus(page)}.txt"})
         elif is_mono_request:
             return render_template('note_mono.html', page=page, text=text)
         else:
