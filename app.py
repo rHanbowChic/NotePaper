@@ -44,6 +44,7 @@ def page_get(page):
     cur = get_db().cursor()
     # 如果以.md结尾，则渲染markdown并输出HTML作为模板的一部分。（templates/note_md.html）
     if page.endswith(".md"):  # /example1.md
+        """
         page = page[0:-3]  # example1
         text = cur.execute("select text from pages where id = ?", (page,)).fetchall()
         if len(text) == 0:  # 如果数据库没有记录
@@ -64,6 +65,8 @@ def page_get(page):
             return Response(text, mimetype='text/plain')
         else:
             return render_template('note_md.html', page=page, text=text)
+        """
+        return render_template("md_client.html")
     else:  # 如果不以.md结尾，则返回笔记页面。（templates/note.html）
         text = cur.execute("select text from pages where id = ?", (page,)).fetchall()
         if len(text) == 0:
@@ -71,18 +74,28 @@ def page_get(page):
         else:
             text = text[0][0]
         is_text_request = request.args.get('text') is not None or request.args.get('t') is not None
+        is_md_api_request = request.args.get('md_api') is not None
         is_mono_request = request.args.get('m') is not None or request.args.get('mono') is not None
+
         if (request.headers.get("User-Agent") is not None and (
                 "curl" in request.headers.get("User-Agent")
                 or "Wget" in request.headers.get("User-Agent")
                 or is_text_request
         )):  # 给带有text参数的请求始终直接显示内容
             return Response(text, mimetype='text/plain')
+
+        elif is_md_api_request:
+            text = utils.text.link.auto_link(text)
+            text = utils.text.sanitizer.sanitize_html(text)
+            return Response(text, mimetype='text/plain')
+
         elif request.args.get('save') is not None:
             return Response(text, mimetype='text/plain',
                             headers={"Content-disposition": f"attachment; filename*=UTF-8''{quote_plus(page)}.txt"})
+
         elif is_mono_request:
             return render_template('note_mono.html', page=page, text=text)
+
         else:
             return render_template('note.html', page=page, text=text)
 
