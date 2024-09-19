@@ -7,7 +7,6 @@ from flask import Response
 from flaskext.markdown import Markdown
 from flask_socketio import SocketIO, join_room, emit, leave_room
 from urllib.parse import quote_plus
-import utils.text.tex
 import utils.text.link
 import utils.text.sanitizer
 import utils.router
@@ -42,30 +41,9 @@ def close_connection(exception):
 def page_get(page):
     # 获得一个执行SQL语句的SQlite cursor。get_db是在前文声明的。
     cur = get_db().cursor()
-    # 如果以.md结尾，则渲染markdown并输出HTML作为模板的一部分。（templates/note_md.html）
+    # 如果以.md结尾，渲染Markdown。
     if page.endswith(".md"):  # /example1.md
-        """
-        page = page[0:-3]  # example1
-        text = cur.execute("select text from pages where id = ?", (page,)).fetchall()
-        if len(text) == 0:  # 如果数据库没有记录
-            text = ""
-        else:
-            text = text[0][0]
-        # 将TeX公式转换为Markdown图片
-        text = utils.text.tex.tex_to_markdown(text)
-        # 自动为URL添加Markdown超链接
-        text = utils.text.link.auto_link(text)
-        # 过滤可能的XSS
-        text = utils.text.sanitizer.sanitize_html(text)
-
-        if (request.headers.get("User-Agent") is not None and (
-            "curl/" in request.headers.get("User-Agent")
-            or "Wget/" in request.headers.get("User-Agent")
-        )):  # 给curl与wget直接显示内容
-            return Response(text, mimetype='text/plain')
-        else:
-            return render_template('note_md.html', page=page, text=text)
-        """
+        # 返回一个静态客户端，从md_api获取文本并进行前端渲染。（templates/md_client.html）
         return render_template("md_client.html")
     else:  # 如果不以.md结尾，则返回笔记页面。（templates/note.html）
         text = cur.execute("select text from pages where id = ?", (page,)).fetchall()
@@ -75,7 +53,6 @@ def page_get(page):
             text = text[0][0]
         is_text_request = request.args.get('text') is not None or request.args.get('t') is not None
         is_md_api_request = request.args.get('md_api') is not None
-        is_mono_request = request.args.get('m') is not None or request.args.get('mono') is not None
 
         if (request.headers.get("User-Agent") is not None and (
                 "curl" in request.headers.get("User-Agent")
@@ -92,9 +69,6 @@ def page_get(page):
         elif request.args.get('save') is not None:
             return Response(text, mimetype='text/plain',
                             headers={"Content-disposition": f"attachment; filename*=UTF-8''{quote_plus(page)}.txt"})
-
-        elif is_mono_request:
-            return render_template('note_mono.html', page=page, text=text)
 
         else:
             return render_template('note.html', page=page, text=text)
@@ -114,10 +88,18 @@ def note_post(page):
     return ""
 
 
-# 访问根目录时触发。302跳转到一个随机的4位小写字母页面。
+# 访问根目录时触发。302跳转到一个随机的4位小写字母页面或2个单词组成的页面。
 @app.route("/", methods=['GET'])
 def root_redirect():
     if request.args.get('w') is not None or request.args.get('words') is not None:
+        response = redirect(f"./{utils.router.genname_words()}", code=302)
+        response.set_cookie("prefer_words_redirect", value="1")
+        return response
+    if request.args.get('l') is not None or request.args.get('letters') is not None:
+        response = redirect(f"./{utils.router.genname_letters()}", code=302)
+        response.set_cookie("prefer_words_redirect", value="", expires=0)
+        return response
+    if request.cookies.get("prefer_words_redirect"):
         return redirect(f"./{utils.router.genname_words()}", code=302)
     return redirect(f"./{utils.router.genname_letters()}", code=302)
 
