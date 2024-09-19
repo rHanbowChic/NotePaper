@@ -15,6 +15,20 @@ let u = decodeURIComponent(window.location.pathname);
 let page = u.substring(1, u.length - 3);
 $("#footer").text(page);
 $("title").text(page + " - NotePaper");
+$(".content").html(`<div class="md-loading-notice" style="
+                            width: inherit;
+                            height: inherit;
+                            display: flex;
+                            flex-wrap: nowrap;
+                            align-items: center;
+                            justify-content: center;
+                        ">
+                                <p style="
+                                    font-size: 10px;
+                                    color: #777;
+                                    font-style: oblique;
+                                ">Waiting for AJAX response...</p>
+                        </div>`)
 $.ajax({
     type: "GET",
     url: "/" + page + "?md_api",
