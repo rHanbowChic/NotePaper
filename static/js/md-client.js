@@ -48,7 +48,13 @@ $.ajax({
         for (let i=0;i<count;i++) {
             let tex=$(`#tex_${i}`).text();
             tex=tex.substring(1,tex.length-1);
-            katex.render(tex,document.getElementById(`tex_${i}`));
+            try {
+                katex.render(tex,document.getElementById(`tex_${i}`));
+            }
+            catch {
+                console.log(`The No. ${i+1} TeX "${tex}" cannot be rendered due to a syntax error.`);
+                $(`#tex_${i}`).html(`<span style="color: #ffd700;">Invalid TeX here. See the browser console for further information.</span>`);
+            }
         }
     },
 });
