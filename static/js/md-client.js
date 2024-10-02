@@ -37,17 +37,20 @@ $.ajax({
         let lines=text.split("\n");
         let count = 0;
         for (let [idx,line] of lines.entries()) {
-            if (line.startsWith("$") && line.endsWith("$") && line.length < 500 && count < 50) {
-                lines[idx]=`<span id="tex_${count}">${line}</span>`;
-                count += 1;
+            let areas = line.split('$');
+            for (let [idx1, area] of areas.entries()) {
+                if (idx1 % 2) {
+                    areas[idx1] = `<span id="tex_${count}">${area}</span>`;
+                    count += 1;
+                }
             }
+            lines[idx] = areas.join('');
         }
         text = lines.join("\n");
         $(".content").html(marked.parse(text));
 
         for (let i=0;i<count;i++) {
             let tex=$(`#tex_${i}`).text();
-            tex=tex.substring(1,tex.length-1);
             try {
                 katex.render(tex,document.getElementById(`tex_${i}`));
             }
