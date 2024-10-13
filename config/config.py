@@ -18,6 +18,6 @@ WELCOME_PAGE = "welcome"
 INTERNAL_KEY = "!changeme!"
 
 # 受保护的页面列表。它们对用户是只读的。
-PROTECTED_PAGES = [
+PROTECTED_PAGES = (
 
-]
+)
