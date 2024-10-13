@@ -9,9 +9,14 @@
 * 重定向至随机双单词页面（四字母页面仍可用）
 * 页面储存于SQLite数据库
 * 向Note.ms的完全兼容（脚本无需修改即可使用）
+#### 管理特性 （详见config/config.py)
+* 自定义NotePaper实例的名称
+* 锁定一组受保护页面
+* 设置用户初次访问的欢迎页面
+* 限制页面文本最大长度
 
 ### TeX
-在一个开头与结尾均为“$”的行中，可填写LaTeX风格的数学公式。
+NotePaper的md页面支持行内LaTeX数学公式的渲染。公式需要写在两个"$"符号之间。
 ```markdown
 ## Fundamental theorem of calculus
 
