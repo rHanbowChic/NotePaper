@@ -81,7 +81,7 @@ def note_post(page):
     # 正常情况下，浏览器永远不会对以.md结尾的页面发送POST请求。但不排除使用其他程序的情况。
     if not (page.endswith(".md") or page in PROTECTED_PAGES):
         t = request.form.get("t")
-        if t is not None and len(t) < 100000:  # 文字上限
+        if t is not None and len(t) < PAGE_MAX_LENGTH:
             cur.execute("insert or replace into pages values(?, ?);", (page, t))
             get_db().commit()
     return ""
@@ -90,6 +90,11 @@ def note_post(page):
 # 访问根目录时触发。302跳转到一个随机的4位小写字母页面或2个单词组成的页面。
 @app.route("/", methods=['GET'])
 def root_redirect():
+    if SHOW_WELCOME:
+        if not request.cookies.get("have_visited"):
+            response = redirect(f"./{WELCOME_PAGE}", code=302)
+            response.set_cookie("have_visited", value="1")
+            return response
     if request.args.get('w') is not None or request.args.get('words') is not None:
         response = redirect(f"./{utils.router.genname_words()}", code=302)
         response.set_cookie("prefer_words_redirect", value="1")
@@ -125,7 +130,7 @@ def text_post(message):
     if room in PROTECTED_PAGES and not ('pass' in message and message['pass'] == INTERNAL_KEY):
         return
     cur = get_db().cursor()
-    if len(message['text']) < 100000:  # 文字上限
+    if len(message['text']) < PAGE_MAX_LENGTH:
         cur.execute("insert or replace into pages values(?, ?);", (message['page'], message['text']))
         get_db().commit()  # 这个阻塞吗？
         emit("text_broadcast", {"text": message['text']}, to=room, broadcast=True, include_self=False)
