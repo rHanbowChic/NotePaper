@@ -14,7 +14,7 @@ marked.setOptions({
 let u = decodeURIComponent(window.location.pathname);
 let page = u.substring(1, u.length - 3);
 $("#footer").text(page);
-$("title").text(page + " - NotePaper");
+$("title").text(page + " - " + $("title").text());
 $(".content").html(`<div class="md-loading-notice" style="
                             width: inherit;
                             height: inherit;

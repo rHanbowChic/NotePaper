@@ -1,9 +1,12 @@
 // 需要 jQuery 2.2.4 与 SocketIO 4.7.4。在模板'note.html'中，这两个依赖被script标签引用。
 
+const url_params = new URLSearchParams(window.location.search);
+
 var $textarea = $(".content");
 $(".print").text($textarea.val());
 // page为页面名。例如http://hostname/odyu为'odyu'。
 const page = decodeURIComponent(window.location.pathname.substring(1));
+const pass = url_params.get("pass");
 
 var socket;
 $(document).ready(function(){
@@ -22,7 +25,12 @@ $(document).ready(function(){
     // 用户修改页面内容后，发送内容到服务器
     area = document.querySelector('textarea');
     area.addEventListener('input', () => {
-        socket.emit('text_post', {'page':page, 'text':$textarea.val()});
+        if (pass) {
+            socket.emit('text_post', {'page':page, 'text':$textarea.val(), 'pass':pass});
+        }
+        else {
+            socket.emit('text_post', {'page':page, 'text':$textarea.val()});
+        }
         $(".print").text($textarea.val());
     }, false);
 
@@ -63,7 +71,6 @@ function set_index(selector, index) {
     }
 }
 
-const url_params = new URLSearchParams(window.location.search);
 if (url_params.get('m') !== null || url_params.get('mono') !== null) {
     localStorage.setItem("np_prefer_mono", 1);
 }

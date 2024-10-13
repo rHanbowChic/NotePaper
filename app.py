@@ -4,16 +4,15 @@ from flask import g
 from flask import request
 from flask import redirect
 from flask import Response
-from flaskext.markdown import Markdown
 from flask_socketio import SocketIO, join_room, emit, leave_room
 from urllib.parse import quote_plus
 import utils.text.link
 import utils.text.sanitizer
 import utils.router
 import sqlite3
+from config.config import *
 
-app = Flask(__name__)
-Markdown(app)
+app = Flask(SITE_NAME)
 socketio = SocketIO(app)
 
 
@@ -44,7 +43,7 @@ def page_get(page):
     # 如果以.md结尾，渲染Markdown。
     if page.endswith(".md"):  # /example1.md
         # 返回一个静态客户端，从md_api获取文本并进行前端渲染。（templates/md_client.html）
-        return render_template("md_client.html")
+        return render_template("md_client.html", site_name=SITE_NAME)
     else:  # 如果不以.md结尾，则返回笔记页面。（templates/note.html）
         text = cur.execute("select text from pages where id = ?", (page,)).fetchall()
         if len(text) == 0:
@@ -71,7 +70,7 @@ def page_get(page):
                             headers={"Content-disposition": f"attachment; filename*=UTF-8''{quote_plus(page)}.txt"})
 
         else:
-            return render_template('note.html', page=page, text=text)
+            return render_template('note.html', page=page, text=text, site_name=SITE_NAME)
 
 
 # 笔记页面的POST方法。在原版Notems中，这是更新笔记的唯一方法。NotePaper使用Socket.IO更新笔记内容，但此方法因兼容目的被保留。
@@ -80,9 +79,9 @@ def page_get(page):
 def note_post(page):
     cur = get_db().cursor()
     # 正常情况下，浏览器永远不会对以.md结尾的页面发送POST请求。但不排除使用其他程序的情况。
-    if not page.endswith(".md"):
+    if not (page.endswith(".md") or page in PROTECTED_PAGES):
         t = request.form.get("t")
-        if t is not None:
+        if t is not None and len(t) < 100000:  # 文字上限
             cur.execute("insert or replace into pages values(?, ?);", (page, t))
             get_db().commit()
     return ""
@@ -121,10 +120,15 @@ def left(message): leave_room(message['page'])
 @socketio.on("text_post", namespace="/note-ws")
 def text_post(message):
     room = message['page']
+    if room.endswith(".md"):
+        return
+    if room in PROTECTED_PAGES and not ('pass' in message and message['pass'] == INTERNAL_KEY):
+        return
     cur = get_db().cursor()
-    cur.execute("insert or replace into pages values(?, ?);", (message['page'], message['text']))
-    get_db().commit()  # 这个阻塞吗？
-    emit("text_broadcast", {"text": message['text']}, to=room, broadcast=True, include_self=False)
+    if len(message['text']) < 100000:  # 文字上限
+        cur.execute("insert or replace into pages values(?, ?);", (message['page'], message['text']))
+        get_db().commit()  # 这个阻塞吗？
+        emit("text_broadcast", {"text": message['text']}, to=room, broadcast=True, include_self=False)
 
 
 if __name__ == "__main__":
