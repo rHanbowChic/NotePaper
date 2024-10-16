@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 
@@ -6,7 +7,7 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#ebeef2">
-    <title>{{ site_name }}</title>
+    <title>NotePaper</title>
     <meta name="HandheldFriendly" content="True">
     <meta name="MobileOptimized" content="320">
     <meta name="viewport"
@@ -26,27 +27,31 @@
     <meta property="og:site_name" content="Note.ms">
     <meta property="og:description" content="Take notes with simplicity">
     <meta property="og:image" content="static/img/app.png">
-
 </head>
 
 <body>
     <div class="stack">
         <div class="layer">
             <div class="layer">
-                <div class="layer">
-                    <textarea class="content">{{ text }}</textarea>
+                <div class="layer" style="
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+">
+                    <div style="
+    font-size: 35px;
+">'s' stands for share.</div>
+    <div>/s/make/your_page_id<br>You'll see fantastic things happening.</div>
                 </div>
             </div>
         </div>
         <div class="flag">
-            <a href="/">{{ site_name }}</a>/<a href="?save">{{ page }}</a>
+            <a href="/">NotePaper</a>
         </div>
     </div>
-    <pre class="print"></pre>
-    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.2.4.min.js"></script>
-    <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
-    <script src="/static/js/note.js"></script>
-
+    <pre class="print">
+    </pre>
 
 </body>
 

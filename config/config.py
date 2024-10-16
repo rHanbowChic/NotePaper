@@ -21,3 +21,9 @@ INTERNAL_KEY = "!changeme!"
 PROTECTED_PAGES = (
 
 )
+
+# 是否在/s/目录启用只读分享功能。
+USE_SHARE = False
+
+# import secrets, base64; print(base64.b64encode(secrets.token_bytes(18)))  # 在Python shell中运行以获取随机盐值
+SHARE_ID_HASH_SALT = "exampleX3lMgI0MbaU5mtB"
