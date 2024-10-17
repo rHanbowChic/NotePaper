@@ -47,15 +47,15 @@ def page_get(page):
     cur = get_db().cursor()
     # 如果以.md结尾，渲染Markdown。
     if page.endswith(".md"):  # /example1.md
-        # 返回一个静态客户端，从md_api获取文本并进行前端渲染。（templates/md_client.html）
-        return render_template("md_client.html", site_name=SITE_NAME)
-    else:  # 如果不以.md结尾，则返回笔记页面。（templates/note.html）
+        # 返回一个静态客户端，从md_api获取文本并进行前端渲染。（templates/md_client.j2）
+        return render_template("paper.html", body="md_client", site_name=SITE_NAME)
+    else:  # 如果不以.md结尾，则返回笔记页面。（templates/note.j2）
         text = cur.execute("select text from pages where id = ?", (page,)).fetchall()
         if len(text) == 0:
             text = ""
         else:
             text = text[0][0]
-        return utils.member.text2resp.text2resp(app, page, text, SITE_NAME, 'note.html')
+        return utils.member.text2resp.text2resp(app, page, text, SITE_NAME, 'note')
 
 
 # 笔记页面的POST方法。在原版Notems中，这是更新笔记的唯一方法。NotePaper使用Socket.IO更新笔记内容，但此方法因兼容目的被保留。

@@ -3,7 +3,7 @@ from flask import Response, render_template, request
 import utils
 
 
-def text2resp(app, page, text, site_name, template):
+def text2resp(app, page, text, site_name, body):
     is_text_request = request.args.get('text') is not None or request.args.get('t') is not None
     is_md_api_request = request.args.get('md_api') is not None
 
@@ -24,4 +24,4 @@ def text2resp(app, page, text, site_name, template):
                         headers={"Content-disposition": f"attachment; filename*=UTF-8''{quote_plus(page)}.txt"})
 
     else:
-        return render_template(template, page=page, text=text, site_name=site_name)
+        return render_template("paper.html", body=body, page=page, text=text, site_name=site_name)
