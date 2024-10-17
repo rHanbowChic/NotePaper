@@ -1,3 +1,5 @@
+var url_params = new URLSearchParams(window.location.search);
+
 if (url_params.get('m') !== null || url_params.get('mono') !== null) {
     localStorage.setItem("np_prefer_mono", 1);
 }

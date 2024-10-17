@@ -1,6 +1,6 @@
 // 需要 jQuery 2.2.4 与 SocketIO 4.7.4。在模板'note.html'中，这两个依赖被script标签引用。
 
-const url_params = new URLSearchParams(window.location.search);
+var url_params = new URLSearchParams(window.location.search);
 
 var $textarea = $(".content");
 $(".print").text($textarea.val());
