@@ -10,7 +10,7 @@ import os
 import hashlib
 import base64
 from flask import Blueprint
-from config.config import *
+from config.defaults import *
 
 share = Blueprint('share', __name__)
 

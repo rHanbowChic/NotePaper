@@ -1,0 +1,17 @@
+SITE_NAME = "NotePaper"
+
+PAGE_MAX_LENGTH = 100000
+
+SHOW_WELCOME = False
+
+WELCOME_PAGE = "welcome"
+
+INTERNAL_KEY = "!changeme!"
+
+PROTECTED_PAGES = (
+
+)
+
+USE_SHARE = False
+
+SHARE_ID_HASH_SALT = "exampleX3lMgI0MbaU5mtB"

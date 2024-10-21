@@ -13,7 +13,7 @@ import utils.member.text2resp
 import sqlite3
 
 from blueprints.share import share
-from config.config import *
+from config.defaults import *
 
 app = Flask(SITE_NAME)
 socketio = SocketIO(app)
