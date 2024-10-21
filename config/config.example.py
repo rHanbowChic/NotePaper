@@ -1,17 +1,12 @@
-SITE_NAME = "NotePaper"
+SITE_NAME = "NoteHub"
 
-PAGE_MAX_LENGTH = 100000
+PAGE_MAX_LENGTH = 114515
 
-SHOW_WELCOME = False
+SHOW_WELCOME = True
 
-WELCOME_PAGE = "welcome"
+WELCOME_PAGE = "surprise"
 
-INTERNAL_KEY = "!changeme!"
+INTERNAL_KEY = "i_solemnly_swear_i_am_up_to_no_good"
 
-PROTECTED_PAGES = (
+PROTECTED_PAGES = tuple([str(i) for i in range(1000)])
 
-)
-
-USE_SHARE = False
-
-SHARE_ID_HASH_SALT = "exampleX3lMgI0MbaU5mtB"
