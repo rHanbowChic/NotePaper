@@ -1,16 +1,13 @@
 from flask import render_template
 from flask import g
 from flask import redirect
-import utils.text.link
-import utils.text.sanitizer
-import utils.router
-import utils.member.text2resp
+import utils
 import sqlite3
 import os
 import hashlib
 import base64
 from flask import Blueprint
-from config.defaults import *
+from config import *
 
 share = Blueprint('share', __name__)
 
@@ -23,10 +20,12 @@ def gen_share_id(page_id, salt):
     sha.update((page_id + salt).encode("utf-8"))
     return base64.urlsafe_b64encode(sha.digest()).decode("utf-8")[:7]
 
+
 @share.before_request
 def before_request():
     g.mdb = sqlite3.connect(MODULE_DATABASE)
     g.db = sqlite3.connect(MAIN_DATABASE)
+
 
 @share.teardown_request
 def teardown_request(exception):
@@ -51,6 +50,7 @@ def make_share_id_then_redirect(page_id):
     g.mdb.commit()
     return redirect(f"../{share_id}")
 
+
 @share.route("/<share_id>")
 def shared_page_get(share_id):
     cur = g.db.cursor()
@@ -70,4 +70,4 @@ def shared_page_get(share_id):
         else:
             text = text[0][0]
 
-        return utils.member.text2resp.text2resp(share, share_id, text, SITE_NAME, 'share_note')
+        return utils.text2resp(share, share_id, text, SITE_NAME, 'share_note')

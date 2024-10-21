@@ -5,15 +5,11 @@ from flask import request
 from flask import redirect
 from flask import Response
 from flask_socketio import SocketIO, join_room, emit, leave_room
-from urllib.parse import quote_plus
-import utils.text.link
-import utils.text.sanitizer
-import utils.router
-import utils.member.text2resp
+import utils
 import sqlite3
 
 from blueprints.share import share
-from config.defaults import *
+from config import *
 
 app = Flask(SITE_NAME)
 socketio = SocketIO(app)
@@ -55,7 +51,7 @@ def page_get(page):
             text = ""
         else:
             text = text[0][0]
-        return utils.member.text2resp.text2resp(app, page, text, SITE_NAME, 'note')
+        return utils.text2resp(app, page, text, SITE_NAME, 'note')
 
 
 # 笔记页面的POST方法。在原版Notems中，这是更新笔记的唯一方法。NotePaper使用Socket.IO更新笔记内容，但此方法因兼容目的被保留。
@@ -81,16 +77,16 @@ def root_redirect():
             response.set_cookie("have_visited", value="1")
             return response
     if request.args.get('w') is not None or request.args.get('words') is not None:
-        response = redirect(f"./{utils.router.genname_words()}", code=302)
+        response = redirect(f"./{utils.genname_words()}", code=302)
         response.set_cookie("prefer_words_redirect", value="1")
         return response
     if request.args.get('l') is not None or request.args.get('letters') is not None:
-        response = redirect(f"./{utils.router.genname_letters()}", code=302)
+        response = redirect(f"./{utils.genname_letters()}", code=302)
         response.set_cookie("prefer_words_redirect", value="", expires=0)
         return response
     if request.cookies.get("prefer_words_redirect"):
-        return redirect(f"./{utils.router.genname_words()}", code=302)
-    return redirect(f"./{utils.router.genname_letters()}", code=302)
+        return redirect(f"./{utils.genname_words()}", code=302)
+    return redirect(f"./{utils.genname_letters()}", code=302)
 
 
 # Socket.IO 加入房间。浏览器端的JS在页面完成加载时传递信息，‘page’为所在的页面。例如http://hostname/odyu为‘odyu’。
