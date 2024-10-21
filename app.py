@@ -11,6 +11,8 @@ import sqlite3
 from blueprints.share import share
 from config import *
 
+utils.init_notepaper_db()
+
 app = Flask(SITE_NAME)
 socketio = SocketIO(app)
 if USE_SHARE:
