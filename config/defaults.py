@@ -33,4 +33,4 @@ SHARE_ID_HASH_SALT = "exampleX3lMgI0MbaU5mtB"
 
 
 if os.path.isfile(os.path.join(os.path.dirname(__file__), "config.py")):
-    from .config import *
+    from .config import *  # PyCharm可能会对这一句报错，但属正常。只需要忽略它。
