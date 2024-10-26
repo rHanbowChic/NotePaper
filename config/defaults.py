@@ -9,6 +9,9 @@ SITE_NAME = "NotePaper"
 # 页面文本的最大长度。超出此长度将不会保存。（设置为0可以全域只读）
 PAGE_MAX_LENGTH = 100000
 
+# 是否允许javascript协议出现在markdown链接中。
+ALLOW_JS_MARKDOWN_LINKS = True
+
 # 是否为初次来访者显示欢迎页面。
 SHOW_WELCOME = False
 

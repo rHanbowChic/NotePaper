@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup
+import re
 import nh3
 
 
@@ -9,7 +10,7 @@ VALID_TAGS = ['strong', 'em', 'p', 'ul', 'ol', 'li', 'b', 'i',
 VALID_ATTRS = ['class', 'style']
 
 
-def sanitize_html(text):
+def sanitize_html(text, remove_js_links = False):
     """通过删除标签和属性，去除段落中可能的XSS代码。"""
     # 这是BeautifulSoup。
     soup = BeautifulSoup(text, "html.parser")
@@ -25,8 +26,18 @@ def sanitize_html(text):
                     del tag[attr]
         else:
             tag.hidden = True
-
+    if remove_js_links:
+        return remove_javascript_protocol_markdown_links(soup.renderContents().decode('utf-8'))
     return soup.renderContents().decode('utf-8')
+
+
+def remove_javascript_protocol_markdown_links(text):
+    pattern = r'\[.*?\]\(javascript:.*\)'
+
+    while re.search(pattern, text, re.IGNORECASE):
+        text = re.sub(pattern, '', text, flags=re.IGNORECASE)
+
+    return text
 
 
 # NH3_ALLOWED_TAGS = nh3.ALLOWED_TAGS | {"style"}
@@ -35,3 +46,11 @@ def sanitize_html(text):
 
 def sanitize_using_nh3(text):
     return nh3.clean(text)
+
+
+if __name__ == '__main__':
+    print(sanitize_html("""
+[Normal link](https://example.com)
+[JavaScript link](JavaScript:alert('XSS'))
+Another line with [JAVASCRIPT link](JAVASCRIPT:console.log('test')) and [another one](JavaScript:void(0))
+""", remove_js_links=True))

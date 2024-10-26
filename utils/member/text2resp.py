@@ -1,6 +1,7 @@
 from urllib.parse import quote_plus
 from flask import Response, render_template, request
 from ..text import link, sanitizer
+from config import *
 
 
 def text2resp(app, page, text, site_name, body):
@@ -16,7 +17,7 @@ def text2resp(app, page, text, site_name, body):
 
     elif is_md_api_request:
         text = link.auto_link(text)
-        text = sanitizer.sanitize_html(text)
+        text = sanitizer.sanitize_html(text, remove_js_links=not ALLOW_JS_MARKDOWN_LINKS)
         return Response(text, mimetype='text/plain')
 
     elif request.args.get('save') is not None:
