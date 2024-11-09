@@ -1,3 +1,4 @@
 config/config.py
 *.db
 *.sqlite
+*.pyc

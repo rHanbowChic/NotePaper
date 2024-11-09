@@ -15,14 +15,10 @@ def text2resp(app, page, text, site_name, body):
     )):  # 给带有text参数的请求始终直接显示内容
         return Response(text, mimetype='text/plain')
 
-    elif is_md_api_request:
-        text = link.auto_link(text)
-        text = sanitizer.sanitize_html(text, remove_js_links=not ALLOW_JS_MARKDOWN_LINKS)
-        return Response(text, mimetype='text/plain')
-
     elif request.args.get('save') is not None:
         return Response(text, mimetype='text/plain',
                         headers={"Content-disposition": f"attachment; filename*=UTF-8''{quote_plus(page)}.txt"})
 
     else:
+        print(body,page,text)
         return render_template("paper.html", body=body, page=page, text=text, site_name=site_name)

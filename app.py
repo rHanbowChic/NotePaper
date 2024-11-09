@@ -7,6 +7,7 @@ from flask import Response
 from flask_socketio import SocketIO, join_room, emit, leave_room
 import utils
 import sqlite3
+import json
 
 from blueprints.share import share
 from config import *
@@ -43,16 +44,17 @@ def close_connection(exception):
 def page_get(page):
     # 获得一个执行SQL语句的SQlite cursor。get_db是在前文声明的。
     cur = get_db().cursor()
+    print(page)
+    text = cur.execute("select text from pages where id = ?", (page.rstrip(".md"),)).fetchall()
+    if len(text) == 0:
+        text = ""
+    else:
+        text = text[0][0]
     # 如果以.md结尾，渲染Markdown。
     if page.endswith(".md"):  # /example1.md
-        # 返回一个静态客户端，从md_api获取文本并进行前端渲染。（templates/md_client.j2）
-        return render_template("paper.html", body="md_client", site_name=SITE_NAME)
+        # 返回包含markdown值的渲染客户端
+        return utils.text2resp(app, page, json.dumps(text), SITE_NAME, 'md_client')
     else:  # 如果不以.md结尾，则返回笔记页面。（templates/note.j2）
-        text = cur.execute("select text from pages where id = ?", (page,)).fetchall()
-        if len(text) == 0:
-            text = ""
-        else:
-            text = text[0][0]
         return utils.text2resp(app, page, text, SITE_NAME, 'note')
 
 
