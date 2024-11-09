@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 import re
-import nh3
+#import nh3
 
 
 VALID_TAGS = ['strong', 'em', 'p', 'ul', 'ol', 'li', 'b', 'i',

@@ -7,7 +7,6 @@ from flask import Response
 from flask_socketio import SocketIO, join_room, emit, leave_room
 import utils
 import sqlite3
-import json
 
 from blueprints.share import share
 from config import *
@@ -53,7 +52,7 @@ def page_get(page):
     # 如果以.md结尾，渲染Markdown。
     if page.endswith(".md"):  # /example1.md
         # 返回包含markdown值的渲染客户端
-        return utils.text2resp(app, page, json.dumps(text), SITE_NAME, 'md_client')
+        return utils.text2resp(app, page, text, SITE_NAME, 'md_client')
     else:  # 如果不以.md结尾，则返回笔记页面。（templates/note.j2）
         return utils.text2resp(app, page, text, SITE_NAME, 'note')
 
