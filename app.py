@@ -26,7 +26,9 @@ DATABASE = 'data/note_paper.sqlite'
 def get_db():
     db = getattr(g, '_database', None)
     if db is None:
-        db = g._database = sqlite3.connect(DATABASE)
+        db = g._database = sqlite3.connect(DATABASE, timeout=30)
+        db.execute("PRAGMA journal_mode = WAL")
+        db.execute("PRAGMA cache_size = -2000")
     return db
 
 
