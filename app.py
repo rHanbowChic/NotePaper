@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, abort
 from flask import render_template
 from flask import g
 from flask import request
@@ -64,11 +64,12 @@ def page_get(page):
 def note_post(page):
     cur = get_db().cursor()
     # 正常情况下，浏览器永远不会对以.md结尾的页面发送POST请求。但不排除使用其他程序的情况。
-    if not (page.endswith(".md") or page in PROTECTED_PAGES):
-        t = request.form.get("t")
-        if t is not None and len(t) < PAGE_MAX_LENGTH:
-            cur.execute("insert or replace into pages values(?, ?);", (page, t))
-            get_db().commit()
+    if page.endswith(".md") or page in PROTECTED_PAGES:
+        abort(403)
+    t = request.form.get("t")
+    if t is not None and len(t) < PAGE_MAX_LENGTH:
+        cur.execute("insert or replace into pages values(?, ?);", (page, t))
+        get_db().commit()
     return ""
 
 
@@ -117,7 +118,7 @@ def text_post(message):
     cur = get_db().cursor()
     if len(message['text']) < PAGE_MAX_LENGTH:
         cur.execute("insert or replace into pages values(?, ?);", (message['page'], message['text']))
-        get_db().commit()  # 这个阻塞吗？
+        get_db().commit()  # 这个阻塞吗？ / 好吧它阻塞，所以需要优化SQLite连接方式 -- 11/10/2024
         emit("text_broadcast", {"text": message['text']}, to=room, broadcast=True, include_self=False)
 
 
