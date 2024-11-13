@@ -28,7 +28,8 @@ $(".content").html(`<div class="md-loading-notice" style="
                                     color: #777;
                                     font-style: oblique;
                                 ">Waiting for AJAX response...</p>
-                        </div>`)
+                        </div>`);
+
 $.ajax({
     type: "GET",
     url: "/" + page + "?md_api",
@@ -36,7 +37,26 @@ $.ajax({
         text = t;
         let lines=text.split("\n");
         let count = 0;
+        let in_block = false;
+        let block_content = "";
+        let trash_idx = []
         for (let [idx,line] of lines.entries()) {
+            if (line == '$$') {
+                in_block = !in_block;
+                if (in_block) trash_idx.push(idx);
+                if (!in_block) {
+                    lines[idx] = `<span id="tex_${count}">${block_content}</span>`;
+                    count += 1;
+                    block_content = "";
+                }
+                continue;
+            }
+            if (in_block) {
+                block_content += (line + '\n');
+                trash_idx.push(idx);
+                continue;
+            }
+
             let areas = line.split('$');
             for (let [idx1, area] of areas.entries()) {
                 if (idx1 % 2) {
@@ -46,6 +66,8 @@ $.ajax({
             }
             lines[idx] = areas.join('');
         }
+        for (let i;i = trash_idx.pop();) lines.splice(i, 1);
+
         text = lines.join("\n");
         $(".content").html(marked.parse(text));
 
