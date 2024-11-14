@@ -1,9 +1,9 @@
-from flask import Flask, abort
+from flask import Flask
 from flask import render_template
 from flask import g
 from flask import request
 from flask import redirect
-from flask import Response
+from flask import abort
 from flask_socketio import SocketIO, join_room, emit, leave_room
 import utils
 import sqlite3
@@ -84,11 +84,11 @@ def root_redirect():
     if SHOW_WELCOME:
         if not request.cookies.get("have_visited"):
             response = redirect(f"./{WELCOME_PAGE}", code=302)
-            response.set_cookie("have_visited", value="1")
+            response.set_cookie("have_visited", value="1", max_age=60*60*24*365*20)  # 20 years
             return response
     if request.args.get('w') is not None or request.args.get('words') is not None:
         response = redirect(f"./{utils.genname_words()}", code=302)
-        response.set_cookie("prefer_words_redirect", value="1")
+        response.set_cookie("prefer_words_redirect", value="1", max_age=60*60*24*365*20)
         return response
     if request.args.get('l') is not None or request.args.get('letters') is not None:
         response = redirect(f"./{utils.genname_letters()}", code=302)
