@@ -67,9 +67,14 @@ def note_post(page):
     if page.endswith(".md") or page in PROTECTED_PAGES:
         abort(403)
     t = request.form.get("t")
-    if t is not None and len(t) < PAGE_MAX_LENGTH:
-        cur.execute("insert or replace into pages values(?, ?);", (page, t))
-        get_db().commit()
+    if t is None:
+        abort(400)
+    if len(t) >= PAGE_MAX_LENGTH:
+        abort(413)
+    socketio.emit("text_broadcast", {"text": t}, to=page, namespace="/note-ws")
+    cur.execute("insert or replace into pages values(?, ?);", (page, t))
+    get_db().commit()
+
     return ""
 
 
