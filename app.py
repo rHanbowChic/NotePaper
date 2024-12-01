@@ -124,7 +124,12 @@ def text_post(message):
     if len(message['text']) < PAGE_MAX_LENGTH:
         cur.execute("insert or replace into pages values(?, ?);", (message['page'], message['text']))
         get_db().commit()  # 这个阻塞吗？ / 好吧它阻塞，所以需要优化SQLite连接方式 -- 11/10/2024
-        emit("text_broadcast", {"text": message['text']}, to=room, broadcast=True, include_self=False)
+        emit("text_broadcast",
+             {
+                 "page": room,
+                 "text": message['text'],
+             }
+             , to=room, broadcast=True, include_self=False)
 
 
 if __name__ == "__main__":
