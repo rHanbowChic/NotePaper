@@ -3,6 +3,8 @@ services:
   flask-app-NotePaper:
     # 指定容器名称
     container_name: NotePaper
+    # 使用主机网络模式，否则 Nginx 无法获取真实 IP
+    network_mode: host
     build:
       context: .
       dockerfile: Dockerfile
