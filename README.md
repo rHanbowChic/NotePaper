@@ -54,6 +54,15 @@ py app.py
 ```
 在浏览器访问`127.0.0.1:5000`。Enjoy！
 
+## Docker Compose 部署
+拉取项目代码到本地，进入项目代码根目录，根据`config/README.txt`修改项目配置，而后在项目代码根目录执行命令：
+```bash
+# 启动并后台运行容器
+docker-compose up -d
+# 停止并删除容器
+docker-compose down
+```
+
 ## 我想放到服务器上，像[note.ect.fyi](https://note.ect.fyi/)
 这是一个Flask应用，你可以使用部署任何Flask应用的方式部署它。
 
