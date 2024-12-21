@@ -3,6 +3,7 @@
 var url_params = new URLSearchParams(window.location.search);
 
 var $textarea = $(".content");
+$textarea.focus();
 $(".print").text($textarea.val());
 // page为页面名。例如http://hostname/odyu为'odyu'。
 const page = decodeURIComponent(window.location.pathname.substring(1));
@@ -21,17 +22,18 @@ $(document).ready(function(){
         let pos = get_pos(".content");
         $textarea.val(data.text);
         set_pos(".content", pos);
+        $(".print").text($textarea.val());
     });
     // 用户修改页面内容后，发送内容到服务器
     area = document.querySelector('textarea');
     area.addEventListener('input', () => {
+        $(".print").text($textarea.val());
         if (pass) {
             socket.emit('text_post', {'page':page, 'text':$textarea.val(), 'pass':pass});
         }
         else {
             socket.emit('text_post', {'page':page, 'text':$textarea.val()});
         }
-        $(".print").text($textarea.val());
     }, false);
 
 });
