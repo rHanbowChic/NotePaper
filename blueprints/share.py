@@ -1,4 +1,4 @@
-from flask import render_template
+from flask import render_template, request, Response
 from flask import g
 from flask import redirect
 import utils
@@ -39,6 +39,8 @@ def teardown_request(exception):
 
 @share.route("/", methods=['GET'])
 def root_notice():
+    if request.args.get("md_api") is not None:  # s.md
+        return Response("## /s?md_api\nect07 set me here to replace the strange layout before", mimetype='text/plain')
     return render_template("paper.html", body="share_explained", site_name=SITE_NAME)
 
 
