@@ -24,5 +24,9 @@ def text2resp(app, page, text, site_name, body):
         return Response(text, mimetype='text/plain',
                         headers={"Content-disposition": f"attachment; filename*=UTF-8''{quote_plus(page)}.txt"})
 
+    elif request.args.get('save-md') is not None:
+        return Response(text, mimetype='text/plain',
+                        headers={"Content-disposition": f"attachment; filename*=UTF-8''{quote_plus(page)}.md"})
+
     else:
         return render_template("paper.html", body=body, page=page, text=text, site_name=site_name)
