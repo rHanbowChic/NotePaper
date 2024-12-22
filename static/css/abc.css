@@ -103,12 +103,15 @@ img {
     }
     .content {
         background-color: #2a2a3a;
-        color: #333;
+        color: #ddd;
     }
     .flag {
         color: #888;
     }
     a:link, a:visited, a:active {
         color: #888;
+    }
+    hr {
+        border-color: #aaa;
     }
 }
