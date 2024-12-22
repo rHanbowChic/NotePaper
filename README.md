@@ -1,18 +1,10 @@
 # NotePaper
 在线剪贴板服务器。概念源于Note.ms。
 
-## 紧急通知
-**1.4及以前的版本均已不再安全，因为一个潜在的XSS漏洞（影响所有笔记页面）。（已通过 [Commit `bc5f6dd`](https://github.com/rHanbowChic/NotePaper/commit/bc5f6dd18ef9265007b990c7b99845570782740c) 修复）**
-
-### 由于1.5版本尚在开发阶段
-**适用于1.4版本的紧急处理方式：将服务器的[template/note.html](https://github.com/rHanbowChic/NotePaper/blob/v1.4.0/templates/note.html#L37)第37行更改为**
-```
-<textarea class="content">{{ text|e }}</textarea>
-```
-
 ## 包含功能
 * 复刻了所有 Note.ms 发现的功能
 * 无需刷新，实时更新页面，且摆放光标到合适的位置
+* 可配置深色主题
 * TeX 数学公式支持
 * 可选的等宽字体
 * 重定向至随机双单词页面（四字母页面仍可用）
