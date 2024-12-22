@@ -36,7 +36,6 @@ $.ajax({
     success: (t) => {
         text = t;
         let lines=text.split("\n");
-        let count = 0;
         let in_block = false;
         let block_content = "";
         let trash_idx = []
@@ -45,8 +44,7 @@ $.ajax({
                 in_block = !in_block;
                 if (in_block) trash_idx.push(idx);
                 if (!in_block) {
-                    lines[idx] = `<span id="tex_${count}">${block_content}</span>`;
-                    count += 1;
+                    lines[idx] = `<span class="tex-block">${block_content}</span>`;
                     block_content = "";
                 }
                 continue;
@@ -60,8 +58,7 @@ $.ajax({
             let areas = line.split('$');
             for (let [idx1, area] of areas.entries()) {
                 if (idx1 % 2) {
-                    areas[idx1] = `<span id="tex_${count}">${area}</span>`;
-                    count += 1;
+                    areas[idx1] = `<span class="tex-block">${area}</span>`;
                 }
             }
             lines[idx] = areas.join('');
@@ -71,15 +68,19 @@ $.ajax({
         text = lines.join("\n");
         $(".content").html(marked.parse(text));
 
-        for (let i=0;i<count;i++) {
-            let tex=$(`#tex_${i}`).text();
+        let count = 1;
+        for (let elem of document.getElementsByClassName("tex-block")) {
+            let tex = elem.innerText;
             try {
-                katex.render(tex,document.getElementById(`tex_${i}`));
+                katex.render(tex, elem);
             }
             catch {
-                console.log(`The No. ${i+1} TeX "${tex}" cannot be rendered due to a syntax error.`);
-                $(`#tex_${i}`).html(`<span style="color: #ffd700;">Invalid TeX here. See the browser console for further information.</span>`);
+                console.log(`The No. ${count} TeX "${tex}" cannot be rendered due to a syntax error.`);
+                elem.innerHTML = `<span style="color: #ffd700;">Invalid TeX here. See the browser console for further information.</span>`;
             }
+            count += 1;
         }
+
+        $(".print").html($(".content").html());
     },
 });
