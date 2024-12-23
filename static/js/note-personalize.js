@@ -27,7 +27,14 @@ a:link, a:visited, a:active {
 hr {
     border-color: unset;
 }
-`
+input[type="button"] {
+    background-color: rgba(85, 86, 88, 0.2);
+    color: unset;
+}
+input[type="text"] {
+    background-color: rgba(85, 86, 88, 0.15);
+    color: unset;
+}`
 
 const DARK_STYLES_OVERRIDE = `body {
     background: url(/static/img/bg-dark.png) top left repeat #1e1e1e;
@@ -49,6 +56,10 @@ a:link, a:visited, a:active {
 }
 hr {
     border-color: #aaa;
+}
+input[type="button"], input[type="text"] {
+    background-color: rgba(225, 225, 225, 0.25);
+    color: #ddd;
 }`
 
 const MONO_FONT_STYLES = `@font-face {
@@ -59,6 +70,10 @@ textarea.content {
     font-family: 'JetBrains Mono', Consolas, 'Courier New', Courier, monospace;
     line-height: 1.5;
     font-size: 13px;
+}
+input[type="button"], input[type="text"] {
+    background-color: rgba(225, 225, 225, 0.25);
+    color: #ddd;
 }`
 
 if (url_params.get('m') !== null || url_params.get('mono') !== null) {

@@ -77,6 +77,32 @@ img {
     vertical-align: middle;
 }
 
+input[type="text"] {
+    appearance: none;
+    border: unset;
+    border-radius: 1000px;
+    background-color: rgba(85, 86, 88, 0.15);
+    height: 23px;
+    width: 160px;
+    padding: 0 10px;
+}
+input[type="button"] {
+    appearance: none;
+    border: unset;
+    border-radius: 1000px;
+    background-color: rgba(85, 86, 88, 0.2);
+    height: 23px;
+}
+input[type="text"]:hover {
+    filter: contrast(3);
+}
+input[type="button"]:hover {
+    filter: contrast(3);
+}
+input[type="button"]:active {
+    filter: contrast(2);
+}
+
 @media print {
 
     .container,
@@ -113,5 +139,9 @@ img {
     }
     hr {
         border-color: #aaa;
+    }
+    input[type="button"], input[type="text"] {
+        background-color: rgba(225, 225, 225, 0.25);
+        color: #ddd;
     }
 }

@@ -1,36 +1,47 @@
+<style>
+    .content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-evenly;
+        font-family: 'JetBrains Mono', 'Courier New', Courier, monospace;
+    }
+    .title {
+        display: grid;
+        gap: 5vh;
+    }
+    h3 {
+        text-align: center;
+    }
+</style>
 <div class="stack">
+<div class="layer">
     <div class="layer">
         <div class="layer">
-            <div class="layer">
-                <div class="content"  style="
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: space-evenly;
-                ">
-                    <div style="
-    font-size: 35px;
-    ">'s' stands for share.</div>
-                    <div>/s/make/your_page_id<br>You'll see fantastic things happening.</div>
-                    <div>
-                        <form><input type="text" id="page_id" name="page_id" value=""
-                                style="height: 20px;border: 1px solid;border-radius: 4px;">
-                            <input type="button" id="confirm" value="GO" style="
-        border: 1px solid;
-        border-radius: 4px;
-    ">
-                        </form>
-                    </div>
+            <div class="content">
+                <div class="title">
+                    <h3>'s' stands for share.</h3>
+                    <p>Alternative method: /s/make/page_id</p>
+                </div>
+                <div class="util">
+                    <input type="text" id="page-id" value="">
+                    <input type="button" id="confirm" value="GO">
                 </div>
             </div>
         </div>
     </div>
+</div>
     <div class="flag">
         <a href="/">{{ site_name }}</a>
     </div>
 </div>
 <script>
-    document.querySelector("#confirm").addEventListener("click", () => {
-        window.open("./make/" + document.querySelector("#page_id").value, "_self");
+    var $ = document.querySelector.bind(document);
+    $("#confirm").addEventListener("click", () => {
+        if ($("#page-id").value == "") return;
+        window.open("./make/" + $("#page-id").value, "_self");
+    });
+    $("#page-id").addEventListener("keydown", e => {
+        if (e.key === "Enter") $("#confirm").click();
     });
 </script>
