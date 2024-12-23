@@ -54,11 +54,9 @@ const MONO_FONT_STYLES = `@font-face {
     font-family: 'JetBrains Mono';
     src:  url('/static/fonts/JetBrainsMono-Light.woff2') format('woff2');
 }
-textarea {
+textarea.content {
     font-family: 'JetBrains Mono', Consolas, 'Courier New', Courier, monospace;
     line-height: 1.5;
-}
-.content {
     font-size: 13px;
 }`
 
