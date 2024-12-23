@@ -1,3 +1,5 @@
+var $ = document.querySelector.bind(document);
+
 var text;
 
 marked.setOptions({
@@ -13,9 +15,9 @@ marked.setOptions({
 
 let u = decodeURIComponent(window.location.pathname);
 let page = u.substring(1, u.length - 3);
-$("#footer").text(page);
-$("title").text(page + " - " + $("title").text());
-$(".content").html(`<div class="md-loading-notice" style="
+$("#footer").innerText = page;
+$("title").innerText = page + " - " + $("title").innerText;
+$(".content").innerHTML = `<div class="md-loading-notice" style="
                             width: inherit;
                             height: inherit;
                             display: flex;
@@ -28,14 +30,14 @@ $(".content").html(`<div class="md-loading-notice" style="
                                     color: #777;
                                     font-style: oblique;
                                 ">Waiting for AJAX response...</p>
-                        </div>`);
+                        </div>`;
 
-$.ajax({
-    type: "GET",
-    url: "/" + page + "?md_api",
-    success: (t) => {
-        text = t;
-        let lines=text.split("\n");
+(async () => {
+  const raw = await fetch("/" + page + "?md_api");
+  let text = await raw.text();
+
+
+  let lines=text.split("\n");
         let in_block = false;
         let block_content = "";
         let trash_idx = []
@@ -66,7 +68,7 @@ $.ajax({
         for (let i;i = trash_idx.pop();) lines.splice(i, 1);
 
         text = lines.join("\n");
-        $(".content").html(marked.parse(text));
+        $(".content").innerHTML = marked.parse(text);
 
         let count = 1;
         for (let elem of document.getElementsByClassName("tex-block")) {
@@ -81,6 +83,5 @@ $.ajax({
             count += 1;
         }
 
-        $(".print").html($(".content").html());
-    },
-});
+        $(".print").innerHTML = $(".content").innerHTML;
+})();

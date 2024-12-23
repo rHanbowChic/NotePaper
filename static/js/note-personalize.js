@@ -1,3 +1,4 @@
+var $ = document.querySelector.bind(document);
 var url_params = new URLSearchParams(window.location.search);
 
 const LIGHT_STYLES_OVERRIDE = `body {
@@ -67,7 +68,7 @@ if (url_params.get('s') !== null || url_params.get('sans') !== null) {
     localStorage.removeItem("np_prefer_mono");
 }
 if (localStorage.getItem("np_prefer_mono")) {
-    $("head").html($("head").html() + `<style>${MONO_FONT_STYLES}</style>`);
+    $("head").innerHTML += `<style>${MONO_FONT_STYLES}</style>`;
 }
 
 if (url_params.get('light') !== null) {
@@ -80,6 +81,6 @@ if (url_params.get('reset-theme') !== null) {
     localStorage.removeItem("np_theme");
 }
 switch (localStorage.getItem("np_theme")) {
-    case "light": $("head").html($("head").html() + `<style>${LIGHT_STYLES_OVERRIDE}</style>`); break;
-    case "dark": $("head").html($("head").html() + `<style>${DARK_STYLES_OVERRIDE}</style>`); break;
+    case "light": $("head").innerHTML += `<style>${LIGHT_STYLES_OVERRIDE}</style>`; break;
+    case "dark": $("head").innerHTML += `<style>${DARK_STYLES_OVERRIDE}</style>`; break;
 }

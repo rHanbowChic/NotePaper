@@ -29,9 +29,8 @@
         <a href="/">{{ site_name }}</a>
     </div>
 </div>
-<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.2.4.min.js"></script>
 <script>
-    $("#confirm").on("click", () => {
-        window.open("./make/" + $("#page_id").val(), "_self");
-    })
+    document.querySelector("#confirm").addEventListener("click", () => {
+        window.open("./make/" + document.querySelector("#page_id").value, "_self");
+    });
 </script>
