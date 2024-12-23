@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 import re
-import nh3
+# import nh3
 
 
 VALID_TAGS = ['strong', 'em', 'p', 'ul', 'ol', 'li', 'b', 'i',
@@ -44,8 +44,10 @@ def remove_javascript_protocol_markdown_links(text):
 # nh3底层的Rust库ammonia确实支持自定义黑名单，但nh3似乎没有把这个函数包装上去！“style”正好在黑名单里。悲剧...
 
 
+"""
 def sanitize_using_nh3(text):
     return nh3.clean(text)
+"""
 
 
 if __name__ == '__main__':
