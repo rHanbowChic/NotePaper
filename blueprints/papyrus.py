@@ -101,8 +101,7 @@ def saving_get(ext, id):
 
 
 if USE_SHARE:
-    @papyrus.route("/file/s/<sid>", methods=["GET"])
-    def shared_file_get(sid):
+    def get_text_from_sid(sid):
         cur = g.db.cursor()
         scur = g.share_db.cursor()
         target = utils.sqlite_result_extract(
@@ -111,18 +110,25 @@ if USE_SHARE:
         text = utils.sqlite_result_extract(
             cur.execute("select text from pages where id = ?", (target,)).fetchall()
         )
+        return text
+
+    @papyrus.route("/file/s/<sid>", methods=["GET"])
+    def shared_file_get(sid):
+        text = get_text_from_sid(sid)
         return jsonify(text)
 
     @papyrus.route("/markdown/s/<sid>", methods=["GET"])
     def shared_md_get(sid):
-        cur = g.db.cursor()
-        scur = g.share_db.cursor()
-        target = utils.sqlite_result_extract(
-            scur.execute("select target from share_id where id = ?", (sid,)).fetchall()
-        )
-        text = utils.sqlite_result_extract(
-            cur.execute("select text from pages where id = ?", (target,)).fetchall()
-        )
+        text = get_text_from_sid(sid)
         text = utils.auto_link(text)
         text = utils.sanitize_html(text)
         return jsonify(text)
+
+
+    @papyrus.route("/saving/<ext>/s/<sid>", methods=["GET"])
+    def shared_saving_get(ext, sid):
+        if ext not in ["txt", "md"]:
+            abort(400)
+        text = get_text_from_sid(sid)
+        return Response(text, mimetype='text/plain',
+                        headers={"Content-disposition": f"attachment; filename*=UTF-8''{quote_plus(sid)}.{ext}"})
