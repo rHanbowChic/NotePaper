@@ -8,7 +8,7 @@
         </div>
     </div>
     <div class="flag">
-        <a href="/">{{ site_name }}</a>/<a href="javascript:n=decodeURIComponent(window.location.pathname);window.open('/'+n.substring(1,n.length-3)+'?save-md','_self')" id="footer"></a>
+        <a href="/">{{ site_name }}</a>/<a href="javascript:void(0)" id="footer"></a>
     </div>
 </div>
 <pre class="print">
@@ -16,3 +16,9 @@
 <script src="https://fastly.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script src="https://fastly.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
 <script src="/static/js/md-client.js"></script>
+<script>
+    document.querySelector("#footer").addEventListener("click", () => {
+        const pathname = decodeURIComponent(window.location.pathname);
+        window.open('/papyrus/saving/md/' + pathname.substring(1, pathname.length-3), '_self');
+    });
+</script>

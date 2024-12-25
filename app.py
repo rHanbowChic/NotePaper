@@ -8,6 +8,7 @@ from flask_socketio import SocketIO, join_room, emit, leave_room
 import utils
 import sqlite3
 
+from blueprints.papyrus import papyrus
 from blueprints.share import share
 from config import *
 
@@ -15,6 +16,7 @@ utils.init_notepaper_db()
 
 app = Flask(SITE_NAME)
 socketio = SocketIO(app)
+app.register_blueprint(papyrus, url_prefix="/papyrus/")
 if USE_SHARE:
     app.register_blueprint(share, url_prefix="/s/")
 
@@ -50,11 +52,9 @@ def page_get(page):
         # 返回一个静态客户端，从md_api获取文本并进行前端渲染。（templates/md_client.j2）
         return render_template("paper.html", body="md_client", site_name=SITE_NAME)
     else:  # 如果不以.md结尾，则返回笔记页面。（templates/note.j2）
-        text = cur.execute("select text from pages where id = ?", (page,)).fetchall()
-        if len(text) == 0:
-            text = ""
-        else:
-            text = text[0][0]
+        text = utils.sqlite_result_extract(
+            cur.execute("select text from pages where id = ?", (page,)).fetchall()
+        )
         return utils.text2resp(app, page, text, SITE_NAME, 'note')
 
 

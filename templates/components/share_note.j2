@@ -7,6 +7,12 @@
         </div>
     </div>
     <div class="flag">
-        <a href="/">{{ site_name }}</a>/<a href="?save">{{ page|e }}</a> - ReadOnly
+        <a href="/">{{ site_name }}</a>/<a href="javascript:void(0);" id="footer">{{ page|e }}</a> - ReadOnly
     </div>
+    <script>
+        document.querySelector("#footer").addEventListener("click", () => {
+            const pathname = decodeURIComponent(window.location.pathname);
+            window.open('/papyrus/saving/txt/' + pathname.substring(1), '_self');
+        });
+    </script>
 </div>
