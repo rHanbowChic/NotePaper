@@ -34,7 +34,20 @@ input[type="button"] {
 input[type="text"] {
     background-color: rgba(85, 86, 88, 0.15);
     color: unset;
+}
+::-webkit-scrollbar {
+    background: unset;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #cecece;
+}
+
+::-webkit-scrollbar:hover {
+    background: unset;
 }`
+
+
 
 const DARK_STYLES_OVERRIDE = `body {
     background: url(/static/img/bg-dark.png) top left repeat #1e1e1e;
@@ -60,7 +73,20 @@ hr {
 input[type="button"], input[type="text"] {
     background-color: rgba(225, 225, 225, 0.25);
     color: #ddd;
+}
+::-webkit-scrollbar {
+    background: #3b3b47;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #505059;
+}
+
+::-webkit-scrollbar:hover {
+    background: #3f3f4b;
 }`
+
+
 
 const MONO_FONT_STYLES = `@font-face {
     font-family: 'JetBrains Mono';
@@ -75,6 +101,8 @@ input[type="button"], input[type="text"] {
     background-color: rgba(225, 225, 225, 0.25);
     color: #ddd;
 }`
+
+
 
 if (url_params.get('m') !== null || url_params.get('mono') !== null) {
     localStorage.setItem("np_prefer_mono", 1);
