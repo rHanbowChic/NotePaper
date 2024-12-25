@@ -14,16 +14,22 @@ from config import *
 papyrus = Blueprint('papyrus', __name__)
 
 MAIN_DATABASE = "data/note_paper.sqlite"
+SHARE_DATABASE = os.path.join(os.path.dirname(__file__), "data/share_id.sqlite")
 
 @papyrus.before_request
 def before_request():
     g.db = sqlite3.connect(MAIN_DATABASE, timeout=30)
     g.db.execute("PRAGMA journal_mode = WAL")
     g.db.execute("PRAGMA cache_size = -2000")
+    if USE_SHARE:
+        g.share_db = sqlite3.connect(SHARE_DATABASE, timeout=30)
 
 @papyrus.teardown_request
 def teardown_request(exception):
     db = getattr(g, 'db', None)
+    if db is not None:
+        db.close()
+    db = getattr(g, 'share_db', None)
     if db is not None:
         db.close()
 
@@ -92,3 +98,31 @@ def saving_get(ext, id):
     )
     return Response(text, mimetype='text/plain',
                     headers={"Content-disposition": f"attachment; filename*=UTF-8''{quote_plus(id)}.{ext}"})
+
+
+if USE_SHARE:
+    @papyrus.route("/file/s/<sid>", methods=["GET"])
+    def shared_file_get(sid):
+        cur = g.db.cursor()
+        scur = g.share_db.cursor()
+        target = utils.sqlite_result_extract(
+            scur.execute("select target from share_id where id = ?", (sid,)).fetchall()
+        )
+        text = utils.sqlite_result_extract(
+            cur.execute("select text from pages where id = ?", (target,)).fetchall()
+        )
+        return jsonify(text)
+
+    @papyrus.route("/markdown/s/<sid>", methods=["GET"])
+    def shared_md_get(sid):
+        cur = g.db.cursor()
+        scur = g.share_db.cursor()
+        target = utils.sqlite_result_extract(
+            scur.execute("select target from share_id where id = ?", (sid,)).fetchall()
+        )
+        text = utils.sqlite_result_extract(
+            cur.execute("select text from pages where id = ?", (target,)).fetchall()
+        )
+        text = utils.auto_link(text)
+        text = utils.sanitize_html(text)
+        return jsonify(text)
