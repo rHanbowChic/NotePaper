@@ -1,6 +1,6 @@
 from urllib.parse import quote_plus
 
-from flask import render_template, request, Response, abort, jsonify
+from flask import render_template, request, Response, abort, jsonify, make_response
 from flask import g
 from flask import redirect
 import utils
@@ -28,12 +28,23 @@ def teardown_request(exception):
         db.close()
 
 
-@papyrus.route("/version", methods=["GET"])
-def version():
+@papyrus.route("/info", methods=["GET"])
+def info():
     return {
-        "major": 1,
-        "minor": 6,
-        "patch": 0,
+        "version": {
+            "major": 1,
+            "minor": 6,
+            "patch": 0,
+        },
+        "site_config": {
+            "site_name": SITE_NAME,
+            "page_max_length": PAGE_MAX_LENGTH,
+            "allow_js_markdown_links": ALLOW_JS_MARKDOWN_LINKS,
+            "show_welcome": SHOW_WELCOME,
+            "welcome_page": WELCOME_PAGE,
+            "use_share": USE_SHARE,
+        },
+
     }
 
 
@@ -50,15 +61,14 @@ def file_get(id):
 def file_post(id):
     cur = g.db.cursor()
     if id.endswith(".md") or id in PROTECTED_PAGES:
-        abort(403)
+        return jsonify({"success": False}), 403
     if request.json is None or "text" not in request.json:
-        abort(400)
+        return jsonify({"success": False}), 400
     if len(request.json["text"]) >= PAGE_MAX_LENGTH:
-        abort(413)
+        return jsonify({"success": False}), 413
     cur.execute("insert or replace into pages values(?, ?);", (id, request.json["text"]))
-    return {
-        "success": True,
-    }
+    g.db.commit()
+    return {"success": True}
 
 
 @papyrus.route("/markdown/<id>", methods=["GET"])
