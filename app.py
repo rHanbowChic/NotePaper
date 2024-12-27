@@ -48,7 +48,7 @@ def page_get(page):
     # 获得一个执行SQL语句的SQlite cursor。get_db是在前文声明的。
     cur = get_db().cursor()
     # 如果以.md结尾，渲染Markdown。
-    if page.endswith(".md") and len(request.args) == 0:  # /example1.md，args为0（没有其他要求）时才真正传回md客户端
+    if page.endswith(".md"):
         # 返回一个静态客户端，从md_api获取文本并进行前端渲染。（templates/md_client.j2）
         return render_template("paper.html", body="md_client", site_name=SITE_NAME)
     else:  # 如果不以.md结尾，则返回笔记页面。（templates/note.j2）
