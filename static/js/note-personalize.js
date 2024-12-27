@@ -35,16 +35,16 @@ input[type="text"] {
     background-color: rgba(85, 86, 88, 0.15);
     color: unset;
 }
-::-webkit-scrollbar {
-    background: unset;
-}
-
-::-webkit-scrollbar-thumb {
-    background: #cecece;
-}
-
-::-webkit-scrollbar:hover {
-    background: unset;
+@media (pointer: fine) {
+    ::-webkit-scrollbar {
+        width: 7px;
+    }
+    ::-webkit-scrollbar-thumb {
+        background: #cecece;
+    }
+    ::-webkit-scrollbar:hover {
+        background: unset;
+    }
 }`
 
 
@@ -84,6 +84,19 @@ input[type="button"], input[type="text"] {
 
 ::-webkit-scrollbar:hover {
     background: #3f3f4b;
+}
+@media (pointer: fine) {
+    ::-webkit-scrollbar {
+        background: #3b3b47;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #505059;
+    }
+
+    ::-webkit-scrollbar:hover {
+        background: #3f3f4b;
+    }
 }`
 
 

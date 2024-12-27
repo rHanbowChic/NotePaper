@@ -103,11 +103,14 @@ input[type="button"]:active {
     filter: contrast(2);
 }
 
-::-webkit-scrollbar {
-    width: 7px;
-}
-::-webkit-scrollbar-thumb {
-    background: #cecece;
+@media (pointer: fine) {
+    ::-webkit-scrollbar {
+        width: 7px;
+    }
+    ::-webkit-scrollbar-thumb {
+        background: #cecece;
+    }
+
 }
 
 @media print {
@@ -151,15 +154,19 @@ input[type="button"]:active {
         background-color: rgba(225, 225, 225, 0.25);
         color: #ddd;
     }
-    ::-webkit-scrollbar {
-        background: #3b3b47;
+    @media (pointer: fine) {
+        ::-webkit-scrollbar {
+            background: #3b3b47;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #505059;
+        }
+
+        ::-webkit-scrollbar:hover {
+            background: #3f3f4b;
+        }
     }
 
-    ::-webkit-scrollbar-thumb {
-        background: #505059;
-    }
-
-    ::-webkit-scrollbar:hover {
-        background: #3f3f4b;
-    }
 }
+
