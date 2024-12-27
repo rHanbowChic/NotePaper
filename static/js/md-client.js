@@ -34,7 +34,7 @@ $(".content").innerHTML = `<div class="md-loading-notice" style="
 
 (async () => {
   const raw = await fetch("/papyrus/markdown/" + page);
-  let text = await raw.json();
+  let text = (await raw.json()).text;
 
 
   let lines=text.split("\n");
