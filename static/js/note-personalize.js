@@ -37,7 +37,7 @@ input[type="text"] {
 }
 @media (pointer: fine) {
     ::-webkit-scrollbar {
-        width: 7px;
+        background: unset;
     }
     ::-webkit-scrollbar-thumb {
         background: #cecece;
