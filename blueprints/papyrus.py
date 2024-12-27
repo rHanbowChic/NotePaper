@@ -16,6 +16,11 @@ papyrus = Blueprint('papyrus', __name__)
 MAIN_DATABASE = "data/note_paper.sqlite"
 SHARE_DATABASE = os.path.join(os.path.dirname(__file__), "data/share_id.sqlite")
 
+def text_resp_dic(text: str):
+    return {
+        "text": text,
+    }
+
 @papyrus.before_request
 def before_request():
     g.db = sqlite3.connect(MAIN_DATABASE, timeout=30)
@@ -60,7 +65,7 @@ def file_get(id):
     text = utils.sqlite_result_extract(
         cur.execute("select text from pages where id = ?", (id,)).fetchall()
     )
-    return jsonify(text)
+    return text_resp_dic(text)
 
 
 @papyrus.route("/file/<id>", methods=["POST"])
@@ -85,7 +90,7 @@ def md_get(id):
     )
     text = utils.auto_link(text)
     text = utils.sanitize_html(text)
-    return jsonify(text)
+    return text_resp_dic(text)
 
 
 @papyrus.route("/saving/<ext>/<id>", methods=["GET"])
@@ -115,14 +120,14 @@ if USE_SHARE:
     @papyrus.route("/file/s/<sid>", methods=["GET"])
     def shared_file_get(sid):
         text = get_text_from_sid(sid)
-        return jsonify(text)
+        return text_resp_dic(text)
 
     @papyrus.route("/markdown/s/<sid>", methods=["GET"])
     def shared_md_get(sid):
         text = get_text_from_sid(sid)
         text = utils.auto_link(text)
         text = utils.sanitize_html(text)
-        return jsonify(text)
+        return text_resp_dic(text)
 
 
     @papyrus.route("/saving/<ext>/s/<sid>", methods=["GET"])
