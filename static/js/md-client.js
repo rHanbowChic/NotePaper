@@ -73,15 +73,42 @@ $(".content").innerHTML = `<div class="md-loading-notice" style="
         let count = 1;
         for (let elem of document.getElementsByClassName("tex-block")) {
             let tex = elem.innerText;
-            try {
-                katex.render(tex, elem);
+            verify_result = verifyTex(tex);
+
+            if (!verify_result.verified) {
+                elem.innerHTML = `<span style="color: #ffd700;">${verify_result.message}</span>`;
             }
-            catch {
-                console.log(`The No. ${count} TeX "${tex}" cannot be rendered due to a syntax error.`);
-                elem.innerHTML = `<span style="color: #ffd700;">Invalid TeX here. See the browser console for further information.</span>`;
+            else {
+                try {
+                    katex.render(tex, elem);
+                }
+                catch {
+                    console.log(`The No. ${count} TeX "${tex}" cannot be rendered due to a syntax error.`);
+                    elem.innerHTML = `<span style="color: #ffd700;">Invalid TeX here. See the browser console for further information.</span>`;
+                }
             }
+
             count += 1;
         }
 
         $(".print").innerHTML = $(".content").innerHTML;
 })();
+
+function verifyTex(tex) {
+    if (tex.length > 1000) return {
+        verified: false,
+        message: "Invalid TeX: too long",
+    }
+    let nesting_count = 0;
+    [...tex].forEach(c => {
+        if (c === "{") nesting_count += 1;
+    });
+    if (nesting_count > 10) return {
+        verified: false,
+        message: "Invalid TeX: too many nested expressions"
+    }
+    return {
+        verified: true,
+        message: "Verified",
+    }
+}
