@@ -101,10 +101,13 @@ function verifyTex(tex) {
     }
     let nesting_count = 0;
     let over_nested = false;
-    [...tex].forEach(c => {
+    [...tex].some(c => {
         if (c === "{") nesting_count += 1;
         if (c === "}") nesting_count -= 1;
-        if (nesting_count > 10) over_nested = true;
+        if (nesting_count > 10) {
+            over_nested = true;
+            return true;
+        }
     });
     if (over_nested) return {
         verified: false,
