@@ -11,6 +11,8 @@ import base64
 from flask import Blueprint
 from config import *
 
+from .share import gen_share_id
+
 papyrus = Blueprint('papyrus', __name__)
 
 MAIN_DATABASE = "data/note_paper.sqlite"
@@ -107,15 +109,19 @@ def saving_get(ext, id):
 
 if USE_SHARE:
     def get_text_from_sid(sid):
+        target = get_target_from_sid(sid)
         cur = g.db.cursor()
-        scur = g.share_db.cursor()
-        target = utils.sqlite_result_extract(
-            scur.execute("select target from share_id where id = ?", (sid,)).fetchall()
-        )
         text = utils.sqlite_result_extract(
             cur.execute("select text from pages where id = ?", (target,)).fetchall()
         )
         return text
+
+    def get_target_from_sid(sid):
+        scur = g.share_db.cursor()
+        target = utils.sqlite_result_extract(
+            scur.execute("select target from share_id where id = ?", (sid,)).fetchall()
+        )
+        return target
 
     @papyrus.route("/file/s/<sid>", methods=["GET"])
     def shared_file_get(sid):
@@ -137,3 +143,20 @@ if USE_SHARE:
         text = get_text_from_sid(sid)
         return Response(text, mimetype='text/plain',
                         headers={"Content-disposition": f"attachment; filename*=UTF-8''{quote_plus(sid)}.{ext}"})
+
+    @papyrus.route("/share-id/<page_id>", methods=["GET"])
+    def share_id_get(page_id):
+        real_id = gen_share_id(page_id, SHARE_ID_HASH_SALT)
+        scur = g.share_db.cursor()
+        id_exists = len(scur.execute("select target from share_id where id = ?", (real_id,)).fetchall())
+        return {
+            "share_id": real_id if id_exists else None
+        }
+
+    @papyrus.route("/share-id/<page_id>", methods=["POST"])
+    def share_id_post(page_id):
+        share_id = gen_share_id(page_id, SHARE_ID_HASH_SALT)
+        scur = g.share_db.cursor()
+        scur.execute("insert or replace into share_id values(?, ?);", (share_id, page_id))
+        g.share_db.commit()
+        return {"success": True, "share_id": share_id}
