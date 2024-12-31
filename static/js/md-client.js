@@ -100,10 +100,13 @@ function verifyTex(tex) {
         message: "Invalid TeX: too long",
     }
     let nesting_count = 0;
+    let over_nested = false;
     [...tex].forEach(c => {
         if (c === "{") nesting_count += 1;
+        if (c === "}") nesting_count -= 1;
+        if (nesting_count > 10) over_nested = true;
     });
-    if (nesting_count > 10) return {
+    if (over_nested) return {
         verified: false,
         message: "Invalid TeX: too many nested expressions"
     }
