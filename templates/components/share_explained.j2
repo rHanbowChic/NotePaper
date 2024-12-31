@@ -39,7 +39,19 @@
     var $ = document.querySelector.bind(document);
     $("#confirm").addEventListener("click", () => {
         if ($("#page-id").value == "") return;
-        window.open("./make/" + $("#page-id").value, "_self");
+        (async () => {
+            let resp;
+            if (
+                (resp =
+                    await (await fetch("/papyrus/share-id/" + $("#page-id").value, {method: "POST",})).json()
+                ).success
+            ) {
+                open(resp.share_id, "_self");
+            }
+            else {
+                alert("Error when trying to communicate with Papyrus API.");
+            }
+        })();
     });
     $("#page-id").addEventListener("keydown", e => {
         if (e.key === "Enter") $("#confirm").click();
