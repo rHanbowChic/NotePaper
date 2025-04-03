@@ -3,7 +3,7 @@ var url_params = new URLSearchParams(window.location.search);
 
 var $textarea = $(".content");
 $textarea.focus();
-$(".print").text = $textarea.value;
+$(".print").innerText = $textarea.value;
 // page为页面名。例如http://hostname/odyu为'odyu'。
 const page = decodeURIComponent(window.location.pathname.substring(1));
 const pass = url_params.get("pass");
