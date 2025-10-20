@@ -33,7 +33,8 @@ USE_SHARE = False
 # import secrets, base64; print(base64.b64encode(secrets.token_bytes(18)))  # 在Python shell中运行以获取随机盐值
 SHARE_ID_HASH_SALT = "exampleX3lMgI0MbaU5mtB"
 
-
+# 在/v/目录下，启用一个“所见即所得”的快捷 Markdown 编辑器。
+ENABLE_LIVE_VIEWER = False
 
 if os.path.isfile(os.path.join(os.path.dirname(__file__), "config.py")):
     from .config import *  # PyCharm可能会对这一句报错，但属正常。只需要忽略它。

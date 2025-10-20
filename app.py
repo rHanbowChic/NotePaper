@@ -98,6 +98,12 @@ def root_redirect():
         return redirect(f"./{utils.genname_words()}", code=302)
     return redirect(f"./{utils.genname_letters()}", code=302)
 
+if ENABLE_LIVE_VIEWER:
+    @app.route("/v/<_>", methods=['GET'])
+    def send_live_viewer(_):
+        return render_template("paper.html", body="live_viewer", site_name=SITE_NAME)
+
+
 
 # Socket.IO 加入房间。浏览器端的JS在页面完成加载时传递信息，‘page’为所在的页面。例如http://hostname/odyu为‘odyu’。
 # 服务器接收到消息后会加入room。此后服务器可向此页面的room发送消息。

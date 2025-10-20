@@ -1,19 +1,33 @@
 var $ = document.querySelector.bind(document);  // RIP jQuery, NotePaper would never be possible without you
 var url_params = new URLSearchParams(window.location.search);
 
-var $textarea = $(".content");
+var $textarea = $("textarea.content");
 $textarea.focus();
 $(".print").innerText = $textarea.value;
 // page为页面名。例如http://hostname/odyu为'odyu'。
-const page = decodeURIComponent(window.location.pathname.substring(1));
+let page1 = "";  // conflicted with the "page" in md_client.js. an ugly workaround but I have no time to refactor it
+if (window.location.pathname.startsWith("/v/")) {
+    page1 = decodeURIComponent(window.location.pathname.substring(3)); // "/v/"
+}
+else {
+    page1 = decodeURIComponent(window.location.pathname.substring(1)); // "/"
+}
+
 const pass = url_params.get("pass");
+
+// 这是此 JS 由 live viewer 引用的情况。
+if (window.location.pathname.startsWith("/v/"))
+    (async () => {
+        $("textarea.content").value =
+            (await (await fetch("/papyrus/file/" + page1, {method: "GET",})).json()).text;
+    })();
 
 var socket;
 document.addEventListener('DOMContentLoaded', function() {
     socket = io.connect('/note-ws');
     // 加入到room
     socket.on('connect', () => {
-        socket.emit('join',{'page': page});
+        socket.emit('join',{'page': page1});
     })
     // 接收到服务器的广播后，更新页面内容
     socket.on('text_broadcast', (data) => {
@@ -21,17 +35,19 @@ document.addEventListener('DOMContentLoaded', function() {
         let pos = get_pos(".content");
         $textarea.value = data.text;
         set_pos(".content", pos);
-        $(".print").innerText = $textarea.value;
+        if (!window.location.pathname.startsWith("/v/"))
+            $(".print").innerText = $textarea.value;
     });
     // 用户修改页面内容后，发送内容到服务器
     area = document.querySelector('textarea');
     area.addEventListener('input', () => {
-        $(".print").innerText = $textarea.value;
+        if (!window.location.pathname.startsWith("/v/"))
+            $(".print").innerText = $textarea.value;
         if (pass) {
-            socket.emit('text_post', {'page':page, 'text':$textarea.value, 'pass':pass});
+            socket.emit('text_post', {'page':page1, 'text':$textarea.value, 'pass':pass});
         }
         else {
-            socket.emit('text_post', {'page':page, 'text':$textarea.value});
+            socket.emit('text_post', {'page':page1, 'text':$textarea.value});
         }
     }, false);
 });
