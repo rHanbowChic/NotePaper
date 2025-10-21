@@ -60,7 +60,11 @@
 <script src="https://fastly.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
 <script src="/static/js/md-client.js"></script>
 <script>
-  setInterval(() => {
-    renderMd(document.querySelector("textarea.content").value);
-  }, 300);
+  document.querySelector("textarea.content").addEventListener("input", () => {
+      renderMd(document.querySelector("textarea.content").value);
+  });
+  document.querySelector("#footer").addEventListener("click", () => {
+        const pathname = decodeURIComponent(window.location.pathname);
+        window.open('/papyrus/saving/md/' + pathname.substring(3, pathname.length), '_self');
+    });
 </script>

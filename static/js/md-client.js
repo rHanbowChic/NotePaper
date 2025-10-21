@@ -48,6 +48,11 @@ $("div.content").innerHTML = `<div class="md-loading-notice" style="
     renderMd(text);
 })();
 
+if (window.location.pathname.startsWith("/v/"))
+    document.querySelector("textarea.content").addEventListener("input", () => {
+      renderMd(document.querySelector("textarea.content").value);
+    });
+
 window.renderMd = async function (text) {
     let lines = text.split("\n");
     let in_block = false;
